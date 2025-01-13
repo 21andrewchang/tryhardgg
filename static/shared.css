@@ -1,0 +1,13 @@
+html,
+body {
+	margin: 20px;
+	display: flex;
+	background-color: #020202; /* Background color */
+	background-image: radial-gradient(circle, #131313 2px, transparent 2px);
+	background-size: 40px 40px; /* Controls grid spacing */
+	margin: 0;
+	height: 100vh; /* Ensure it covers the viewport */
+	justify-content: center;
+	align-items: center;
+	color: #333;
+}

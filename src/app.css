@@ -1,3 +1,16 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+html {
+	margin: 20px;
+	display: flex;
+	background-color: #020202; /* Background color */
+	background-image: radial-gradient(circle, #171717 1px, transparent 1px);
+	background-size: 20px 20px; /* Controls grid spacing */
+	margin: 0;
+	height: 100vh; /* Ensure it covers the viewport */
+	justify-content: center;
+	align-items: center;
+	color: #333;
+}
