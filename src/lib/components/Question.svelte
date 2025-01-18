@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { responses } from '../shared.svelte';
+	import { responses } from '../../shared.svelte';
 	let { question, index } = $props();
 
 	let options = [5, 4, 3, 2, 1];
@@ -9,7 +9,7 @@
 	}
 </script>
 
-<div class="flex justify-center mt-10 font-medium text-white">
+<div class="flex justify-center mt-4 text-xl font-medium text-white">
 	<h1>{question}</h1>
 </div>
 <div class="flex justify-center items-center mb-10">
@@ -21,7 +21,7 @@
 		{:else}
 			<button
 				onclick={() => onclick(option)}
-				class="m-4 w-9 h-9 rounded-full border-2 border-dashed hover:border-solid border-neutral-800"
+				class="m-4 w-9 h-9 rounded-full border-2 border-dashed hover:border-solid border-neutral-600"
 				aria-label={option.toString()}
 			></button>
 		{/if}
@@ -29,4 +29,4 @@
 	<p class="m-4 text-3xl">❌</p>
 </div>
 
-<div class="w-screen border-t border-neutral-900"></div>
+<div class="mb-6 w-screen border-t border-neutral-900"></div>

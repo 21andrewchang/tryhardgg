@@ -1,50 +1,78 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { responses } from '../shared.svelte';
-	import Question from './Question.svelte';
-	let completed = $derived(!responses.includes(-1));
-	let questions = [
-		'I often spam ping my teammates.',
-		'I only make plays when I see where the enemy jungle is.',
-		'I would immediately drop my camps to join a fight and help my team.',
-		'I always stay on the objective until its secured'
-	];
+	import challenger from '$lib/images/challenger.svg';
+	import Nav from '$lib/components/Nav.svelte';
+	import Progress from '$lib/components/Progress.svelte';
+	import Quiz from '$lib/components/Quiz.svelte';
+	import { responses } from '../shared.svelte.js';
+	let scrollY = $state(0);
+	let quizFocus = $derived(responses[0] != -1);
 
-	//propbably don't need to use a form tbh
-	async function handleSubmit(event: any) {
-		if (completed) {
-			const formData = new FormData(event.target);
-			formData.set('responses', JSON.stringify(responses));
+	$effect(() => {
+		if (quizFocus) {
+			handleQuiz();
+		}
+	});
 
-			const res = await fetch('/results', {
-				method: 'POST',
-				body: formData
-			});
+	function handleQuiz() {
+		smoothScrollTo(512);
+	}
 
-			if (res.ok) {
-				// const data = await res.json();
-				await goto(`/results`);
-			} else {
-				console.error('Failed to fetch archetype');
+	function smoothScrollTo(targetY, duration = 300) {
+		const startY = window.scrollY; // Current scroll position
+		const distance = targetY - startY; // Distance to scroll
+		let startTime = 0;
+
+		function animationStep(timestamp) {
+			if (!startTime) startTime = timestamp; // Set the starting time
+			const elapsed = timestamp - startTime; // Time elapsed since animation started
+			const progress = Math.min(elapsed / duration, 1); // Progress (clamped to 1)
+
+			// Ease-in-out function for smooth transition
+			const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+
+			// Calculate the current scroll position
+			const currentY = startY + distance * ease;
+
+			window.scrollTo(0, currentY); // Scroll to the calculated position
+
+			if (progress < 1) {
+				requestAnimationFrame(animationStep); // Continue animation
 			}
 		}
+
+		requestAnimationFrame(animationStep); // Start the animation
 	}
 </script>
 
-<div class="flex justify-center items-center h-screen">
-	<form onsubmit={handleSubmit} class="flex flex-col items-center">
-		{#each questions as question, index}
-			<Question {question} {index} />
-		{/each}
+<div class="flex-col justify-center items-center h-screen">
+	<Nav />
+	<div class="flex flex-row justify-between items-center mt-44 mb-8 ml-20">
+		<div>
+			<h1 class="text-4xl font-semibold text-white">A Quantitative Way</h1>
+			<h1 class="text-4xl font-semibold text-white">to Improve at League of Legends</h1>
+			<div class="flex flex-row mt-4">
+				<button
+					onclick={handleQuiz}
+					class="py-2 px-5 my-4 font-medium text-black rounded-md duration-200 ease-in hover:bg-white bg-neutral-200"
+				>
+					Start climbing
+				</button>
+				<button
+					onclick={handleQuiz}
+					class="py-2 px-5 my-4 mx-6 font-medium rounded-md text-white/80 hover:bg-white/10"
+				>
+					Find Your Player Archetype
+				</button>
+			</div>
+		</div>
+		<img src={challenger} alt="chally" class="mr-20 mb-20 w-80 h-80" />
+	</div>
 
-		<input type="hidden" name="responses" value={JSON.stringify(responses)} />
-
-		<button
-			disabled={!completed}
-			class="py-3 px-6 m-4 text-white bg-blue-500 rounded hover:bg-blue-700 disabled:bg-neutral-800 disabled:text-neutral-700"
-			type="submit"
-		>
-			Submit
-		</button>
-	</form>
+	<Progress />
+	<Quiz />
 </div>
+
+<svelte:window bind:scrollY />
+
+<style>
+</style>

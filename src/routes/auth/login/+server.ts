@@ -1,6 +1,4 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
-import { createClient } from '@supabase/supabase-js';
-const client = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
+import { client } from '$lib/supabase';
 
 import type { RequestHandler } from './$types';
 
@@ -17,6 +15,14 @@ export const POST: RequestHandler = async ({ request }) => {
 	});
 
 	const user = data?.user;
+	if (data.session) {
+		console.log('SETTING SESSION FROM /AUTH/LOGIN');
+		client.auth.setSession({
+			access_token: data.session?.access_token,
+			refresh_token: data.session?.refresh_token
+		});
+	}
+
 	if (error) {
 		console.error('Login error:', error.message);
 		return new Response(JSON.stringify({ error: error.message }), {
@@ -24,7 +30,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			headers: { 'Content-Type': 'application/json' }
 		});
 	} else {
-		console.log('Login successful:', user);
+		console.log('Login successful AUTH DATA:', data);
+		console.log('HERE THE USER LOGS IN USER SHOULD EXIST');
 		return new Response(JSON.stringify({ user }), {
 			headers: { 'Content-Type': 'application/json' }
 		});

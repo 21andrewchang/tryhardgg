@@ -1,30 +1,30 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
-import { createClient } from '@supabase/supabase-js';
-const client = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
+import { client } from '$lib/supabase';
 
-console.log('getting user from /home');
-const { data: user_data, error: user_error } = await client.auth.getUser();
+export async function load({ cookies }) {
+	const { data: session } = await client.auth.getSession();
+	console.log('IF THERE IS A SESSION IT SHOULD BE HERE: ', session);
 
-if (user_error || !user_data.user) {
-	console.error('Error fetching user or user not logged in:', user_error);
-	// window.location.href = '/login';
-}
-const user = user_data.user;
+	const { data: user } = await client.auth.getUser();
+	console.log('WE GOT THE USER: ', user);
+	const { data: data_archetype, error: error_archetype } = await client
+		.from('users')
+		.select('archetype')
+		.eq('id', user.user?.id);
 
-const { data: archetype_data, error: archetype_error } = await client
-	.from('users')
-	.select('archetype')
-	.eq('id', user?.id);
+	let { data: notes, error } = await client.from('notes').select('*');
 
-if (archetype_error) {
-	console.error('Error fetching user data:', archetype_error);
-}
+	if (error_archetype) {
+		console.error('Error fetching user data:', error_archetype);
+	}
 
-console.log('archetype_data: ', archetype_data);
-
-export function load() {
+	let archetype = '';
+	if (data_archetype) {
+		archetype = data_archetype[0].archetype;
+	}
 	return {
-		user: user,
-		archetype: archetype_data
+		user: user.user,
+		notes: notes,
+		session: session,
+		archetype: archetype
 	};
 }
