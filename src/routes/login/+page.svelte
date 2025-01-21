@@ -19,7 +19,7 @@
 			body: body
 		});
 		if (res.ok) {
-			goto('/home');
+			goto('/app');
 		} else {
 			const errorData = await res.json(); // Parse the JSON response for error details
 			const errorMessage = errorData.error || 'Something went wrong'; // Fallback if no error message is provided

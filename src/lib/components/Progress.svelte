@@ -34,7 +34,7 @@
 
 		<!-- Glow effect -->
 		<div
-			class="absolute left-0 rounded-full top-[-4px] h-[12px] bg-[rgba(255,255,255,0.4)] blur-lg"
+			class="absolute left-0 rounded-full h-[12px] bg-[rgba(255,255,255,0.4)] blur-lg"
 			style="width: {Math.min(100, progress.current + 3)}%; filter: blur(12px);"
 		></div>
 
@@ -46,6 +46,9 @@
 	</div>
 	<p class="ml-32 text-xs text-white/80">{Math.round(progress.current)}%</p>
 </div>
+{#if scrollY >= 512}
+	<div class="h-[13px]"></div>
+{/if}
 
 <svelte:window bind:scrollY />
 
