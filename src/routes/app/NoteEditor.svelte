@@ -75,9 +75,9 @@
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
-<div class="fixed top-0 z-50 pt-32 w-full h-full bg-black/20" in:fade={{ duration: 200 }}>
+<div class="fixed top-0 z-50 pt-32 w-full h-full bg-black/60" in:fade={{ duration: 200 }}>
 	<div
-		class="flex flex-col justify-between items-center mx-36 rounded-xl border border-neutral-700 bg-neutral-900"
+		class="flex flex-col justify-between items-center mx-36 bg-black rounded-xl border border-[#202020]"
 		in:scale={{ duration: 100, start: 0.8, opacity: 1 }}
 	>
 		<button
@@ -91,7 +91,7 @@
 		<input
 			bind:value={title}
 			use:focus
-			class="px-4 pb-8 mb-8 w-full text-xl text-white bg-neutral-900 placeholder:text-neutral-700"
+			class="px-4 pb-8 mb-8 w-full text-xl text-white bg-black placeholder:text-neutral-700"
 			type="note"
 			name="note"
 			placeholder="Note"
@@ -104,13 +104,13 @@
 			{#each habits as item, index}
 				{#if habit == index}
 					<button
-						class="flex relative flex-row items-center py-2 pr-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in hover:text-white border-neutral-700 bg-[#212121] text-neutral-200 hover:border-neutral-600"
+						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium bg-black rounded-lg border duration-200 ease-in hover:text-white border-[#202020] text-neutral-200"
 						onclick={() => {
 							habit = index;
 						}}
 					>
 						<Indicator category={item.category} />
-						<span class="text-xs font-normal">{item.name}</span>
+						<span class="ml-2 text-xs font-normal">{item.name}</span>
 
 						{#if command}
 							<div
@@ -123,13 +123,13 @@
 					</button>
 				{:else}
 					<button
-						class="flex relative flex-row items-center py-2 pr-4 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed duration-200 ease-in hover:text-white border-neutral-700 bg-[#212121] text-neutral-200 hover:border-neutral-600"
+						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium bg-black rounded-lg border border-dashed duration-200 ease-in hover:text-white border-[#202020] text-neutral-200"
 						onclick={() => {
 							habit = index;
 						}}
 					>
 						<Indicator category={item.category} />
-						<span class="text-xs font-normal text-neutral-500">{item.name}</span>
+						<span class="ml-2 text-xs font-normal text-[#6c6c6c]">{item.name}</span>
 
 						{#if command}
 							<div
@@ -149,7 +149,7 @@
 						onclick={() => {
 							tagDropdown = !tagDropdown;
 						}}
-						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs rounded-lg border border-neutral-700 bg-[#212121] text-neutral-200"
+						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs bg-black rounded-lg border border-[#202020] text-neutral-200"
 					>
 						<span>{tag}</span>
 						{#if command}
@@ -166,9 +166,9 @@
 						onclick={() => {
 							tagDropdown = !tagDropdown;
 						}}
-						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed border-neutral-700 bg-[#212121] text-neutral-200"
+						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs font-medium bg-black rounded-lg border border-dashed border-[#202020] text-neutral-200"
 					>
-						<span class="text-xs font-normal text-neutral-500">Tags</span>
+						<span class="text-xs font-normal bg-black text-neutral-500">Tags</span>
 						{#if command}
 							<div
 								in:fly={{ duration: 200, x: 5 }}
@@ -183,7 +183,7 @@
 				<!-- tags dropdown -->
 				{#if tagDropdown}
 					<div
-						class="absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border shadow-lg border-neutral-700 bg-[#212121]"
+						class="absolute left-0 top-full z-50 mt-1 w-48 bg-black rounded-lg border shadow-lg border-[#202020]"
 						transition:slide
 					>
 						<div class="flex flex-col py-2 px-2">
@@ -193,7 +193,7 @@
 										tag = item.name;
 										tagDropdown = false;
 									}}
-									class="flex justify-between py-2 px-4 w-full text-xs text-left rounded-md text-neutral-200 hover:bg-neutral-700"
+									class="flex justify-between py-2 px-4 w-full text-xs text-left rounded-md text-neutral-200"
 								>
 									<span>{item.name ? item.name : 'No Tag'}</span>
 									<span class="text-neutral-400/50">{index + 1}</span>
@@ -204,7 +204,7 @@
 				{/if}
 			</div>
 		</div>
-		<div class="flex justify-between p-3 w-full border-t border-t-neutral-700 bg-black/0">
+		<div class="flex justify-between p-3 w-full border-t border-[#202020] bg-black/0">
 			<div class="flex flex-row items-center">
 				<span class="mx-2 mr-4 text-neutral-700">Game {game_num}</span>
 			</div>
@@ -212,7 +212,7 @@
 				onclick={() => {
 					props.handleNote();
 				}}
-				class="py-2 px-5 m-0 text-xs font-medium text-black rounded-md duration-200 ease-in hover:bg-white bg-neutral-200"
+				class="py-2 px-5 m-0 text-xs font-medium text-black rounded-md duration-200 ease-in hover:bg-white bg-white/80"
 			>
 				Create Note
 			</button>
