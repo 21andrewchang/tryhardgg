@@ -1,20 +1,49 @@
 <script>
 	import Indicator from './Indicator.svelte';
+	import thumb from '$lib/images/thumb.svg';
 
-	let { note } = $props();
+	let { note, habits } = $props();
+	$inspect(habits[note.habit]);
 </script>
 
 <div class="flex flex-row justify-between items-center">
-	<div class="flex flex-row items-center">
-		<Indicator category={note.habit} />
-		<h1 class="py-3 px-2 mb-0 text-xs text-white">{note.content}</h1>
+	<div class="flex flex-row items-center space-x-2">
+		<!-- timestamp -->
+		<div class="flex flex-row items-center text-center">
+			<span class="text-xs font-thin text-neutral-400">6:03</span>
+		</div>
+		<!-- note title -->
+		<div class="flex flex-row items-center text-center">
+			<span class="text-xs font-semibold text-[#FAFAFA]">Grubs</span>
+		</div>
+		<!-- note content -->
+		<h1 class="py-3 mb-0 text-xs font-light text-[#fafafa]">{note.content}</h1>
 	</div>
-	<div class="flex flex-row">
-		{#if note.tag}
+	<!-- tags -->
+	<div class="flex flex-row space-x-2">
+		{#if note.good != null}
 			<div
-				class="flex flex-row py-2 px-4 mr-2 text-xs text-center rounded-full border border-neutral-700/70 text-neutral-400"
+				class="flex flex-row justify-center items-center px-3 rounded-full border border-[#202020]"
 			>
-				<span class="text-xs">{note.tag}</span>
+				<img
+					src={thumb}
+					alt="thumb"
+					class="w-2 h-2 transition-transform duration-300 transform"
+					style="transform: rotate({note.good ? 0 : 180}deg);"
+				/>
+			</div>
+		{/if}
+		{#if habits[note.habit]}
+			<div
+				class="flex flex-row items-center py-1 px-3 space-x-2 text-center rounded-full border border-[#202020]"
+			>
+				<Indicator category={habits[note.habit].category} />
+				<span class="text-[9px] text-neutral-400">{habits[note.habit].name}</span>
+			</div>
+		{/if}
+		{#if note.tag}
+			<div class="flex flex-row py-1 px-3 text-center rounded-full border border-[#202020]">
+				<span class="text-[8px] text-neutral-400">{note.tag}</span>
 			</div>
 		{/if}
 	</div>

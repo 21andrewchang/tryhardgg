@@ -12,8 +12,13 @@
 	let games = $state(data.games);
 	let game_num = $state(data.num_games);
 
+	let sidebar = $state(true);
+
 	let title = $state('');
+
+	let habits = $state(data.habits);
 	let habit = $state();
+	let good = $state(false);
 	let tag = $state();
 
 	function createNote() {
@@ -53,22 +58,27 @@
 		}
 	}
 
+	// NEED TO UPDATE THE GOOD/BAD COUNT OF THE HABIT TAGGED IN THE NOTE
 	async function handleNote() {
-		const curr_date = new Date().toISOString().split('T')[0];
+		const curr_date = new Date().toLocaleDateString('en-CA');
+
 		console.log('curr date: ', curr_date);
 		if (title != '') {
 			if (games[game_num]) {
 				games[game_num] = [
 					...games[game_num],
-					{ content: title, habit: habit, tag: tag, game_num: game_num }
+					{ content: title, habit: habit, tag: tag, game_num: game_num, good: good }
 				];
 			} else {
-				games[game_num] = [{ content: title, habit: habit, tag: tag, game_num: game_num }];
+				games[game_num] = [
+					{ content: title, habit: habit, tag: tag, game_num: game_num, good: good }
+				];
 			}
 			const body = JSON.stringify({
 				user_id: user_id,
 				content: title,
 				habit: habit,
+				good: good,
 				game_num: game_num,
 				tag: tag
 			});
@@ -89,27 +99,37 @@
 	}
 
 	function nextGame() {
-		console.log(game_num);
-		console.log(games[game_num]);
 		if (games[game_num] && games[game_num].length > 0) {
 			game_num += 1;
 			games[game_num] = [];
 		}
-		// editorVisable = true;
+		editorVisable = true;
+	}
+	function sidebarT() {
+		sidebar = !sidebar;
 	}
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
 <div class="flex overflow-hidden h-screen">
-	<Sidebar />
-	<div class="flex flex-col flex-1 p-8 h-full transition-all duration-300 ease-in-out">
-		<TopBar />
-		<Widgets />
-		<GamesList {editorVisable} {games} />
+	<Sidebar {sidebar} />
+	<div class="flex flex-col flex-1 p-8 h-screen transition-all duration-300 ease-in-out">
+		<TopBar {sidebarT} />
+		<Widgets {habits} />
+		<GamesList {editorVisable} {games} {habits} />
 		<BottomButtons {createNote} {nextGame} />
 	</div>
 	{#if editorVisable}
-		<NoteEditor bind:title bind:habit bind:tag bind:game_num {handleNote} {cancel} />
+		<NoteEditor
+			bind:title
+			bind:habit
+			bind:good
+			bind:tag
+			bind:game_num
+			{handleNote}
+			{cancel}
+			{habits}
+		/>
 	{/if}
 </div>

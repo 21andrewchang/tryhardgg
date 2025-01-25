@@ -6,13 +6,14 @@
 	let collapsed = $state([]);
 </script>
 
-<div class="flex flex-col flex-1 bg-black rounded-xl border border-[#202020]">
+<text class="mb-2 text-md text-[#D3D3D3]">Session Notes</text>
+<div class="flex flex-col flex-1 rounded-xl border border-[#202020] bg-[#09090B]">
 	<!-- Notes -->
 	<div class="overflow-y-auto flex-1">
 		{#each Object.entries(props.games) as [num, notes], index}
 			<div class="p-4 border-b border-[#202020]">
-				<div class="flex flex-row justify-between w-full">
-					<text class="font-medim text-white/80">
+				<div class="flex flex-row justify-between items-center w-full">
+					<text class="font-medium text-white/80">
 						Game {num}
 					</text>
 					<div class="flex flex-row items-center">
@@ -32,10 +33,10 @@
 					</div>
 				</div>
 				{#if !collapsed[index]}
-					<div transition:slide>
+					<div transition:slide class="mt-3">
 						{#if notes.length > 0}
 							{#each notes as note}
-								<Note {note} />
+								<Note {note} habits={props.habits} />
 							{/each}
 						{:else if notes.length === 0}
 							<div class="flex flex-row justify-center items-center" transition:fade>

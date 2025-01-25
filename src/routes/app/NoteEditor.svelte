@@ -1,22 +1,22 @@
 <script lang="ts">
 	import close from '$lib/images/close.svg';
 	import { fade, fly, scale, slide } from 'svelte/transition';
+	import thumb from '$lib/images/thumb.svg';
 	import Indicator from './Indicator.svelte';
 	let {
 		title = $bindable(),
 		habit = $bindable(),
+		good = $bindable(),
 		tag = $bindable(),
 		game_num = $bindable(),
 		...props
 	} = $props();
 	let command = $state(false);
-	let habits = [
-		{ name: 'Objective Timers', category: 'red' },
-		{ name: 'Man Advantage', category: 'green' },
-		{ name: 'Check Map', category: 'blue' }
-	];
 	let tagDropdown = $state(false);
 	let tags = [{ name: '' }, { name: 'Early Game' }, { name: 'Mid Game' }, { name: 'Late Game' }];
+	let habits = Object.values(props.habits);
+
+	console.log(props.habits);
 
 	function focus(element: HTMLElement) {
 		element.focus();
@@ -24,19 +24,19 @@
 
 	function onKeyDown(event: KeyboardEvent) {
 		if (event.metaKey && event.key === '1') {
-			habit = '0';
+			habit = habits[0].id;
 			event.preventDefault();
 		}
 		if (event.metaKey && event.key === '2') {
-			habit = '1';
+			habit = habits[1].id;
 			event.preventDefault();
 		}
 		if (event.metaKey && event.key === '3') {
-			habit = '2';
+			habit = habits[2].id;
 			event.preventDefault();
 		}
 		if (event.metaKey && event.key === '4') {
-			tagDropdown = true;
+			tagDropdown = !tagDropdown;
 			event.preventDefault();
 		}
 		if (!event.metaKey && tagDropdown && event.key === '1') {
@@ -75,9 +75,12 @@
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
-<div class="fixed top-0 z-50 pt-32 w-full h-full bg-black/60" in:fade={{ duration: 200 }}>
+<div
+	class="fixed top-0 z-50 justify-center pt-32 w-full h-full bg-black/60"
+	in:fade={{ duration: 200 }}
+>
 	<div
-		class="flex flex-col justify-between items-center mx-36 bg-black rounded-xl border border-[#202020]"
+		class="flex flex-col justify-between items-center mx-36 rounded-xl border border-[#202020] bg-[#09090B]"
 		in:scale={{ duration: 100, start: 0.8, opacity: 1 }}
 	>
 		<button
@@ -91,7 +94,7 @@
 		<input
 			bind:value={title}
 			use:focus
-			class="px-4 pb-8 mb-8 w-full text-xl text-white bg-black placeholder:text-neutral-700"
+			class="px-4 pb-8 mb-8 w-full text-xl text-white bg-[#09090B] placeholder:text-neutral-700"
 			type="note"
 			name="note"
 			placeholder="Note"
@@ -99,12 +102,36 @@
 			autocomplete="off"
 		/>
 
-		<div class="flex flex-row self-start mb-2 ml-4">
+		<!-- bottom row tags -->
+		<div class="flex flex-row self-start mb-2 ml-4 space-x-2">
 			<!-- habits -->
+			<button
+				class="flex relative flex-row items-center px-4 space-x-2 rounded-lg border duration-200 ease-in border-[#202020] bg-[#09090B] text-neutral-200 hover:bg-[#202020]"
+				onclick={() => {
+					good = !good;
+				}}
+			>
+				<img
+					src={thumb}
+					alt="thumb"
+					class="w-3 h-3 transition-transform duration-300 transform"
+					style="transform: rotate({good ? 0 : 180}deg);"
+				/>
+				<text class="text-xs text-[#D3D3D3]">{good ? 'Good' : 'Bad'}</text>
+				{#if command}
+					<div
+						in:fly={{ duration: 200, x: 5 }}
+						class="flex absolute right-2 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-white/80 backdrop-blur"
+					>
+						0
+					</div>
+				{/if}
+			</button>
+
 			{#each habits as item, index}
-				{#if habit == index}
+				{#if habit == item.id}
 					<button
-						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium bg-black rounded-lg border duration-200 ease-in hover:text-white border-[#202020] text-neutral-200"
+						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in hover:text-white border-[#202020] bg-[#09090B] text-neutral-200"
 						onclick={() => {
 							habit = index;
 						}}
@@ -123,13 +150,13 @@
 					</button>
 				{:else}
 					<button
-						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium bg-black rounded-lg border border-dashed duration-200 ease-in hover:text-white border-[#202020] text-neutral-200"
+						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed duration-200 ease-in border-[#202020] bg-[#09090B] text-[#6c6c6c] hover:bg-[#202020] hover:text-[#D3D3D3]"
 						onclick={() => {
 							habit = index;
 						}}
 					>
 						<Indicator category={item.category} />
-						<span class="ml-2 text-xs font-normal text-[#6c6c6c]">{item.name}</span>
+						<span class="ml-2 text-xs font-normal">{item.name}</span>
 
 						{#if command}
 							<div
@@ -149,7 +176,7 @@
 						onclick={() => {
 							tagDropdown = !tagDropdown;
 						}}
-						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs bg-black rounded-lg border border-[#202020] text-neutral-200"
+						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs rounded-lg border border-[#202020] bg-[#09090B] text-neutral-200"
 					>
 						<span>{tag}</span>
 						{#if command}
@@ -166,9 +193,9 @@
 						onclick={() => {
 							tagDropdown = !tagDropdown;
 						}}
-						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs font-medium bg-black rounded-lg border border-dashed border-[#202020] text-neutral-200"
+						class="flex flex-row items-center py-2 px-5 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed border-[#202020] bg-[#09090B] text-neutral-200"
 					>
-						<span class="text-xs font-normal bg-black text-neutral-500">Tags</span>
+						<span class="text-xs font-normal text-neutral-500">Tags</span>
 						{#if command}
 							<div
 								in:fly={{ duration: 200, x: 5 }}
@@ -183,7 +210,7 @@
 				<!-- tags dropdown -->
 				{#if tagDropdown}
 					<div
-						class="absolute left-0 top-full z-50 mt-1 w-48 bg-black rounded-lg border shadow-lg border-[#202020]"
+						class="absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border shadow-lg border-[#202020] bg-[#09090B]"
 						transition:slide
 					>
 						<div class="flex flex-col py-2 px-2">

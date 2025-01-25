@@ -5,7 +5,7 @@
 html {
 	margin: 0;
 	padding: 0;
-	background-color: #010101;
+	background-color: #09090b;
 	background-image: radial-gradient(circle, #171717 1px, transparent 1px);
 	background-size: 20px 20px; /* Controls grid spacing */
 	background-attachment: fixed; /* Makes the background stationary */
