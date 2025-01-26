@@ -3,8 +3,10 @@ import type { RequestHandler } from './$types';
 
 async function createNote(
 	id: String,
+	title: String,
+	timestamp: String,
 	content: String,
-	habit: Number,
+	habit_id: Number,
 	tag: String,
 	game_num: Number,
 	good: Boolean,
@@ -14,8 +16,10 @@ async function createNote(
 	try {
 		const { error: insertError } = await client.from('notes').insert({
 			user_id: id,
+			title: title,
+			timestamp: timestamp,
 			content: content,
-			habit: habit,
+			habit_id: habit_id,
 			tag: tag,
 			game_num: game_num,
 			good: good,
@@ -31,8 +35,9 @@ async function createNote(
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { user_id, content, habit, tag, game_num, good, session, block } = await request.json();
-	createNote(user_id, content, habit, tag, game_num, good, session, block);
+	const { user_id, title, timestamp, content, habit_id, tag, game_num, good, session, block } =
+		await request.json();
+	createNote(user_id, title, timestamp, content, habit_id, tag, game_num, good, session, block);
 	return new Response(JSON.stringify({ content }), {
 		headers: { 'Content-Type': 'application/json' }
 	});

@@ -6,24 +6,55 @@
 	import Widgets from './Widgets.svelte';
 	import GamesList from './GamesList.svelte';
 	import SessionSummary from './SessionSummary.svelte';
+	import Library from './Library.svelte';
+	import Dashboard from './Dashboard.svelte';
+
+	type Note = {
+		user_id: string | undefined;
+		title: string;
+		timestamp: string;
+		content: string;
+		habit_id: number;
+		good: boolean;
+		game_num: number;
+		tag: string;
+		session: number;
+		block: number;
+	};
+	type Games = {
+		[key: string]: Note[];
+	};
+	type HabitCount = {
+		id: number;
+		name: string;
+		category: string;
+		goodCount: number;
+		badCount: number;
+	};
+
 	const { data } = $props();
 	const user_id = data?.user?.id;
 
 	let editorVisable = $state(false);
-	let games = $state(data.games);
+	let games: Games = $state(data.games);
 	let curr_game = $state(data.num_games);
 	let total_notes = $derived(Object.values(games).reduce((sum, notes) => sum + notes.length, 0));
 
 	let session = $state(data.session);
 	let block = $state(data.block);
-	let habits = $state(data.habits);
+	let habits: Record<string, HabitCount> = $state(data.habits);
 
 	let sidebar = $state(true);
 
+	const library = data.library;
+
 	let title = $state('');
-	let habit = $state();
+	let content = $state('');
+	let timestamp = $state('');
+	//0 is unset habit
+	let habit_id = $state(0);
 	let good = $state(false);
-	let tag = $state();
+	let tag = $state('');
 
 	function createNote() {
 		editorVisable = true;
@@ -53,17 +84,19 @@
 
 	// NEED TO UPDATE THE GOOD/BAD COUNT OF THE HABIT TAGGED IN THE NOTE
 	async function handleNote() {
-		const newNote = {
+		const newNote: Note = {
 			user_id: user_id,
-			content: title,
-			habit: habit,
+			title: title,
+			timestamp: timestamp,
+			content: content,
+			habit_id: habit_id,
 			good: good,
 			game_num: curr_game,
 			tag: tag,
 			session: session,
 			block: block
 		};
-		if (title != '') {
+		if (content != '') {
 			games[curr_game] = [...(games[curr_game] ?? []), newNote];
 
 			const res = await fetch(`/app`, {
@@ -74,8 +107,15 @@
 				body: JSON.stringify(newNote)
 			});
 			console.log(res);
+			if (habit_id) {
+				if (habit_id) {
+					habits[habit_id][good ? 'goodCount' : 'badCount'] += 1;
+				}
+			}
 			title = '';
-			habit = '';
+			content = '';
+			timestamp = '';
+			habit_id = 0;
 			tag = '';
 			editorVisable = false;
 		}
@@ -117,17 +157,28 @@
 			habit.badCount = 0;
 		});
 	}
+
+	let curr_page = $state('session');
+	function showPage(page: string) {
+		curr_page = page;
+	}
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
 <div class="flex overflow-hidden h-screen">
-	<Sidebar {sidebar} />
+	<Sidebar {sidebar} {showPage} {session} {block} />
 	<div class="flex flex-col p-8 w-screen h-screen transition-all duration-300 ease-in-out">
-		<TopBar {sidebarT} {session} {block} />
-		<Widgets {habits} />
-		<GamesList {editorVisable} {games} {habits} />
-		<BottomButtons {createNote} {nextGame} {curr_game} {finishSession} {summaryVisable} />
+		<TopBar {sidebarT} {session} {block} {curr_page} />
+		{#if curr_page == 'session'}
+			<Widgets {habits} />
+			<GamesList {editorVisable} {games} {habits} />
+			<BottomButtons {createNote} {nextGame} {curr_game} {finishSession} {summaryVisable} />
+		{:else if curr_page == 'library'}
+			<Library {habits} {library} />
+		{:else if curr_page == 'dashboard'}
+			<Dashboard />
+		{/if}
 	</div>
 	{#if summaryVisable}
 		<SessionSummary {habits} {total_notes} {nextSession} />
@@ -135,7 +186,9 @@
 	{#if editorVisable}
 		<NoteEditor
 			bind:title
-			bind:habit
+			bind:timestamp
+			bind:content
+			bind:habit_id
 			bind:good
 			bind:tag
 			bind:curr_game

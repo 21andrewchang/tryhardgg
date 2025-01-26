@@ -1,10 +1,25 @@
 <script lang="ts">
-	import Note from './Note.svelte';
+	import NoteView from './Note.svelte';
 	import { slide, fade } from 'svelte/transition';
 	import closed from '$lib/images/closed.svg';
+
+	type Note = {
+		user_id: string | undefined;
+		content: string;
+		habit_id: number;
+		good: boolean;
+		game_num: number;
+		tag: string;
+		session: number;
+		block: number;
+	};
+	type Games = {
+		[key: string]: Note[];
+	};
 	let props = $props();
-	let collapsed = $state([]);
-	$inspect('games in gamelist', props.games);
+	let games: Games = props.games;
+
+	let collapsed: Boolean[] = $state([]);
 </script>
 
 <text class="mb-2 text-md text-[#D3D3D3]">Session Notes</text>
@@ -12,7 +27,7 @@
 	class="overflow-y-auto flex-col flex-1 rounded-lg border custom-scrollbar border-[#202020] bg-[#09090B]"
 >
 	<!-- Notes -->
-	{#each Object.entries(props.games) as [num, notes], index}
+	{#each Object.entries(games) as [num, notes], index}
 		<div class="p-4 border-b border-[#202020]">
 			<button
 				class="flex flex-row justify-between items-center w-full"
@@ -40,7 +55,7 @@
 				<div transition:slide class="mt-3">
 					{#if notes.length > 0}
 						{#each notes as note}
-							<Note {note} habits={props.habits} />
+							<NoteView {note} habits={props.habits} />
 						{/each}
 					{:else if notes.length === 0}
 						<div class="flex flex-row justify-center items-center" transition:fade>
@@ -58,3 +73,22 @@
 
 	<div class="h-20"></div>
 </div>
+
+<style>
+	/* Custom Scrollbar */
+	::-webkit-scrollbar {
+		width: 1px;
+	}
+	::-webkit-scrollbar-track {
+		margin: 30px;
+	}
+	::-webkit-scrollbar-thumb {
+		background: #606060;
+		transition: opacity 0.2s ease-in-out;
+		opacity: 0;
+	}
+	/* Show scrollbar on hover */
+	div:hover ::-webkit-scrollbar-thumb {
+		opacity: 1;
+	}
+</style>

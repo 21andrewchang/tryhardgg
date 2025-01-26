@@ -3,9 +3,18 @@
 	import { fade, fly, scale, slide } from 'svelte/transition';
 	import thumb from '$lib/images/thumb.svg';
 	import Indicator from './Indicator.svelte';
+
+	type Habit = {
+		id: number;
+		name: string;
+		category: string;
+	};
+
 	let {
 		title = $bindable(),
-		habit = $bindable(),
+		timestamp = $bindable(),
+		content = $bindable(),
+		habit_id = $bindable(),
 		good = $bindable(),
 		tag = $bindable(),
 		curr_game = $bindable(),
@@ -14,7 +23,7 @@
 	let command = $state(false);
 	let tagDropdown = $state(false);
 	let tags = [{ name: '' }, { name: 'Early Game' }, { name: 'Mid Game' }, { name: 'Late Game' }];
-	let habits = Object.values(props.habits);
+	let habits: Habit[] = Object.values(props.habits);
 
 	console.log(props.habits);
 
@@ -24,15 +33,15 @@
 
 	function onKeyDown(event: KeyboardEvent) {
 		if (event.metaKey && event.key === '1') {
-			habit = habits[0].id;
+			habit_id = habits[0].id;
 			event.preventDefault();
 		}
 		if (event.metaKey && event.key === '2') {
-			habit = habits[1].id;
+			habit_id = habits[1].id;
 			event.preventDefault();
 		}
 		if (event.metaKey && event.key === '3') {
-			habit = habits[2].id;
+			habit_id = habits[2].id;
 			event.preventDefault();
 		}
 		if (event.metaKey && event.key === '4') {
@@ -83,7 +92,7 @@
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
 <div
-	class="fixed top-0 z-50 justify-center pt-32 w-full h-full bg-black/60"
+	class="fixed top-0 z-50 justify-start pt-32 w-full h-full bg-black/60"
 	in:fade={{ duration: 200 }}
 >
 	<div
@@ -98,19 +107,50 @@
 		>
 			<img src={close} alt="X" class="w-3 h-3" />
 		</button>
-		<input
-			bind:value={title}
-			use:focus
-			class="px-4 pb-8 mb-8 w-full text-xl text-white bg-[#09090B] placeholder:text-neutral-700"
-			type="note"
-			name="note"
-			placeholder="Note"
-			required
-			autocomplete="off"
-		/>
+		<!-- Inputs -->
+		<div class="flex flex-col p-4 space-y-4 w-full">
+			<div class="flex flex-row items-center space-x-4 w-full">
+				<div
+					class="flex items-center w-1/4 border-r border-[#202020] bg-[#09090B] text-[#FAFAFA] placeholder:text-neutral-700"
+				>
+					<span class="pl-4 text-sm font-thin text-neutral-700"> Timestamp </span>
+					<input
+						bind:value={timestamp}
+						use:focus
+						class="py-2 pr-2 ml-2 w-full text-sm font-thin truncate bg-black/0 text-[#FAFAFA] placeholder:text-neutral-700"
+						type="text"
+						name="timestamp"
+						placeholder="(ex. 6:03)"
+						autocomplete="off"
+					/>
+				</div>
+				<div class="flex items-center py-2 px-4 w-3/5">
+					<span class="text-sm font-semibold text-neutral-700"> Title </span>
+					<input
+						bind:value={title}
+						use:focus
+						class="py-2 ml-2 w-full text-sm font-semibold rounded-md truncate border-[#202020] bg-[#09090B] text-[#FAFAFA] placeholder:text-neutral-700"
+						type="text"
+						name="title"
+						placeholder="(ex. First Grubs, Bot Tier 2)"
+						autocomplete="off"
+					/>
+				</div>
+			</div>
+			<input
+				bind:value={content}
+				use:focus
+				class="py-2 px-4 w-full text-xl rounded-md border-[#202020] bg-[#09090B] text-[#FAFAFA] placeholder:text-neutral-700"
+				type="text"
+				name="note"
+				placeholder="Note"
+				required
+				autocomplete="off"
+			/>
+		</div>
 
 		<!-- bottom row tags -->
-		<div class="flex flex-row self-start mb-2 ml-4 space-x-2">
+		<div class="flex flex-row self-start mt-10 mb-2 ml-4 space-x-2">
 			<!-- habits -->
 			<button
 				class="flex relative flex-row items-center px-4 space-x-2 rounded-lg border duration-200 ease-in border-[#202020] bg-[#09090B] text-neutral-200 hover:bg-[#202020]"
@@ -128,7 +168,7 @@
 				{#if command}
 					<div
 						in:fly={{ duration: 200, x: 5 }}
-						class="flex absolute right-2 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-white/80 backdrop-blur"
+						class="flex absolute right-2 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-[#D3D3D3]/80 backdrop-blur"
 					>
 						0
 					</div>
@@ -136,11 +176,11 @@
 			</button>
 
 			{#each habits as item, index}
-				{#if habit == item.id}
+				{#if habit_id == item.id}
 					<button
-						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in hover:text-white border-[#202020] bg-[#09090B] text-neutral-200"
+						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in border-[#202020] bg-[#202020] text-neutral-200 hover:text-[#D3D3D3]"
 						onclick={() => {
-							habit = item.id;
+							habit_id = item.id;
 						}}
 					>
 						<Indicator category={item.category} />
@@ -149,7 +189,7 @@
 						{#if command}
 							<div
 								in:fly={{ duration: 200, x: 5 }}
-								class="flex absolute right-2 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-white/80 backdrop-blur"
+								class="flex absolute right-2 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-[#D3D3D3]/80 backdrop-blur"
 							>
 								{index + 1}
 							</div>
@@ -159,7 +199,7 @@
 					<button
 						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed duration-200 ease-in border-[#202020] bg-[#09090B] text-[#6c6c6c] hover:bg-[#202020] hover:text-[#D3D3D3]"
 						onclick={() => {
-							habit = item.id;
+							habit_id = item.id;
 						}}
 					>
 						<Indicator category={item.category} />
@@ -168,7 +208,7 @@
 						{#if command}
 							<div
 								in:fly={{ duration: 200, x: 5 }}
-								class="flex absolute right-2 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-white/80 backdrop-blur"
+								class="flex absolute right-2 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-[#D3D3D3]/80 backdrop-blur"
 							>
 								{index + 1}
 							</div>
@@ -189,7 +229,7 @@
 						{#if command}
 							<div
 								in:fly={{ duration: 200, x: 5 }}
-								class="flex absolute right-4 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-white/80 backdrop-blur"
+								class="flex absolute right-4 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-[#D3D3D3]/80 backdrop-blur"
 							>
 								4
 							</div>
@@ -206,7 +246,7 @@
 						{#if command}
 							<div
 								in:fly={{ duration: 200, x: 5 }}
-								class="flex absolute right-4 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-white/80 backdrop-blur"
+								class="flex absolute right-4 z-50 justify-center items-center self-center w-6 h-5 font-light rounded-[3px] bg-white/10 text-[10px] text-[#D3D3D3]/80 backdrop-blur"
 							>
 								4
 							</div>

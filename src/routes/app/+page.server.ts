@@ -13,6 +13,26 @@ import { client } from '$lib/supabase';
 //     archetype = data_archetype[0].archetype;
 // }
 
+async function fetchLibrary() {
+	try {
+		let { data: library, error } = await client.from('library').select('*');
+		if (error) throw error;
+
+		const groupedLibrary = library?.reduce((acc, item) => {
+			if (!acc[item.category]) {
+				acc[item.category] = [];
+			}
+			acc[item.category].push(item);
+			return acc;
+		}, {});
+
+		return groupedLibrary;
+	} catch (err) {
+		console.log('error fetching library', err);
+		return [];
+	}
+}
+
 function accumulateNoteResults(notes, habits) {
 	if (notes == null || notes == undefined) return [];
 	const habitList = {};
@@ -27,7 +47,7 @@ function accumulateNoteResults(notes, habits) {
 	});
 	if (notes) {
 		notes.forEach((note) => {
-			const habitId = note.habit;
+			const habitId = note.habit_id;
 			const isGood = note.good;
 			console.log('habitList habitid', habitList[habitId]);
 
@@ -62,15 +82,14 @@ async function getUserHabits(userId: String | undefined) {
 			return []; // No habits found for the user
 		}
 
-		// .in gets all the rows that match something in a list habitIds
 		const { data: habits, error: habitsError } = await client
 			.from('library')
 			.select('id, name, category')
-			.in('id', habitIds);
+			.in('id', habitIds); // gets rows w/ id IN habitsId
 
 		if (habitsError) throw habitsError;
 
-		return habits; // Return the habits with name and category
+		return habits;
 	} catch (error) {
 		console.error('Error fetching user habits:', error);
 		return null;
@@ -107,6 +126,9 @@ export async function load() {
 	}
 
 	let habits = accumulateNoteResults(notes, await getUserHabits(user?.user?.id));
+	const library = await fetchLibrary();
+
+	console.log(library);
 
 	let games;
 	let num_games;
@@ -134,6 +156,7 @@ export async function load() {
 		num_games: num_games,
 		habits: habits,
 		session: curr_session?.session,
-		block: curr_block?.block
+		block: curr_block?.block,
+		library: library
 	};
 }

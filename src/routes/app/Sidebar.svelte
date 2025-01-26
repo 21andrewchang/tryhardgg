@@ -2,7 +2,6 @@
 	import { sineInOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import { goto } from '$app/navigation';
-	import next from '$lib/images/back.svg';
 	import pfp from '$lib/images/pfp.svg';
 	import { client } from '$lib/supabase';
 
@@ -26,15 +25,30 @@
 						<img src={pfp} alt="profile" class="w-5 h-5" />
 						<span class="text-xs font-light text-[#D3D3D3]">행복한 돼지</span>
 					</div>
-					<div class="flex flex-row items-center p-3 space-x-2 border-b border-[#202020]">
-						<text class="text-[12px] text-[#D3D3D3]">Session 4</text>
-						<text class="text-[12px] text-[#6C6C6C]">Block 1</text>
-					</div>
-					<div class="flex flex-col items-start p-3 space-y-2">
-						<button class="text-[10px] text-[#D3D3D3]">Dashboard</button>
-						<button class="text-[10px] text-[#D3D3D3]">Player Profile</button>
-						<button class="text-[10px] text-[#D3D3D3]">Library</button>
-						<button class="text-[10px] text-[#D3D3D3]">All Notes</button>
+					<button
+						class="flex flex-row items-center py-3 px-4 space-x-2 w-full border-b border-[#202020] hover:bg-[#202020]"
+						onclick={() => props.showPage('session')}
+					>
+						<text class="text-xs text-[#D3D3D3]">Session {props.session}</text>
+						<text class="text-xs text-[#6C6C6C]">Block {props.block}</text>
+					</button>
+					<div class="flex flex-col items-start p-2 space-y-1">
+						<button
+							class="p-2 w-full text-xs rounded-md text-start text-[#D3D3D3] hover:bg-[#202020]"
+							onclick={() => props.showPage('dashboard')}>Dashboard</button
+						>
+						<button
+							class="p-2 w-full text-xs rounded-md text-start text-[#D3D3D3] hover:bg-[#202020]"
+							onclick={() => props.showPage('library')}>Library</button
+						>
+						<button
+							class="p-2 w-full text-xs rounded-md text-start text-[#D3D3D3] hover:bg-[#202020]"
+							onclick={() => props.showPage('all_notes')}>All Notes</button
+						>
+						<button
+							class="p-2 w-full text-xs rounded-md text-start text-[#D3D3D3] hover:bg-[#202020]"
+							onclick={() => props.showPage('player_profile')}>Player Profile</button
+						>
 					</div>
 				</div>
 

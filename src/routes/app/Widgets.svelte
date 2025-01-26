@@ -1,14 +1,24 @@
 <script lang="ts">
+	import { fade, fly, scale, slide } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
 	import Indicator from './Indicator.svelte';
 	import thumb from '$lib/images/thumb.svg';
 	let props = $props();
+	type HabitCount = {
+		id: number;
+		name: string;
+		category: string;
+		goodCount: number;
+		badCount: number;
+	};
+	let habit_widgets: HabitCount[] = Object.values(props.habits);
 </script>
 
 <!-- Widgets and Logout Button -->
 <div class="flex flex-col mb-4">
 	<text class="mb-2 text-md text-[#D3D3D3]">Block Focuses</text>
 	<div class="flex flex-row justify-between space-x-4 w-full">
-		{#each Object.values(props.habits) as item}
+		{#each habit_widgets as item}
 			<button
 				class="flex flex-grow justify-between items-center p-4 py-2 space-x-4 rounded-lg border border-[#202020] bg-[#09090B]"
 			>

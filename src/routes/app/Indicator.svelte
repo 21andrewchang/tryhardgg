@@ -14,12 +14,14 @@
 <!-- 	></div> -->
 <!-- {/if} -->
 
-{#if props.category == 'red' || props.category == 0}
+{#if props.category == 'red'}
 	<div class="w-2 h-2 rounded-full bg-[#FE2C2D]"></div>
-{:else if props.category == 'green' || props.category == 1}
+{:else if props.category == 'green'}
 	<div class="w-2 h-2 rounded-full bg-[#2BC813]"></div>
-{:else if props.category == 'blue' || props.category == 2}
+{:else if props.category == 'blue'}
 	<div class="w-2 h-2 rounded-full bg-[#2C84FF]"></div>
+{:else if props.category == 'yellow'}
+	<div class="w-2 h-2 rounded-full bg-[#FABD05]"></div>
 {:else}
 	<div class="w-2 h-2 rounded-full bg-neutral-200"></div>
 {/if}
