@@ -1,11 +1,11 @@
 import { client } from '$lib/supabase';
 import type { RequestHandler } from './$types';
 
-async function publishArchetype(id: String, archetype: String) {
+async function publishNewUser(id: String, archetype: String) {
 	try {
 		const { error: insertError } = await client
 			.from('users')
-			.insert({ id: id, archetype: archetype });
+			.insert({ id: id, archetype: archetype, session: 1, block: 1 });
 		if (insertError) {
 			console.log(insertError);
 		}
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	} else {
 		console.log('Created new user: ', user);
 		if (user && archetype) {
-			publishArchetype(user.id, archetype);
+			publishNewUser(user.id, archetype);
 		}
 		return new Response(JSON.stringify({ user }), {
 			headers: { 'Content-Type': 'application/json' }

@@ -3,7 +3,6 @@
 	import thumb from '$lib/images/thumb.svg';
 
 	let { note, habits } = $props();
-	$inspect(habits[note.habit]);
 </script>
 
 <div class="flex flex-row justify-between items-center">
@@ -23,7 +22,7 @@
 	<div class="flex flex-row space-x-2">
 		{#if note.good != null}
 			<div
-				class="flex flex-row justify-center items-center px-3 rounded-full border border-[#202020]"
+				class="flex flex-row justify-center items-center py-2 px-3 rounded-full border border-[#202020]"
 			>
 				<img
 					src={thumb}
@@ -42,7 +41,9 @@
 			</div>
 		{/if}
 		{#if note.tag}
-			<div class="flex flex-row py-1 px-3 text-center rounded-full border border-[#202020]">
+			<div
+				class="flex flex-row items-center py-1 px-3 text-center rounded-full border border-[#202020]"
+			>
 				<span class="text-[8px] text-neutral-400">{note.tag}</span>
 			</div>
 		{/if}

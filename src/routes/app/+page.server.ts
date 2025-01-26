@@ -14,8 +14,7 @@ import { client } from '$lib/supabase';
 // }
 
 function accumulateNoteResults(notes, habits) {
-	console.log('notes from acc: ', notes);
-	console.log('habits from acc: ', habits);
+	if (notes == null || notes == undefined) return [];
 	const habitList = {};
 	habits.forEach((habit) => {
 		habitList[habit.id] = {
@@ -26,22 +25,21 @@ function accumulateNoteResults(notes, habits) {
 			badCount: 0
 		};
 	});
-	console.log('habitList: ', habitList);
+	if (notes) {
+		notes.forEach((note) => {
+			const habitId = note.habit;
+			const isGood = note.good;
+			console.log('habitList habitid', habitList[habitId]);
 
-	console.log('notes lenght', notes.length);
-	notes.forEach((note) => {
-		const habitId = note.habit;
-		const isGood = note.good;
-		console.log('habitList habitid', habitList[habitId]);
-
-		if (habitList[habitId]) {
-			if (isGood) {
-				habitList[habitId].goodCount += 1;
-			} else {
-				habitList[habitId].badCount += 1;
+			if (habitList[habitId]) {
+				if (isGood) {
+					habitList[habitId].goodCount += 1;
+				} else {
+					habitList[habitId].badCount += 1;
+				}
 			}
-		}
-	});
+		});
+	}
 	return habitList;
 }
 
@@ -64,7 +62,7 @@ async function getUserHabits(userId: String | undefined) {
 			return []; // No habits found for the user
 		}
 
-		// Fetch the corresponding habits from the library
+		// .in gets all the rows that match something in a list habitIds
 		const { data: habits, error: habitsError } = await client
 			.from('library')
 			.select('id, name, category')
@@ -81,15 +79,28 @@ async function getUserHabits(userId: String | undefined) {
 
 //creating days should be handled on page load. no need to be in +server.ts
 export async function load() {
-	const { data: session } = await client.auth.getSession();
 	const { data: user } = await client.auth.getUser();
 
-	const curr_date = new Date().toLocaleDateString('en-CA');
-	console.log(curr_date);
+	const { data: curr_session, error: session_error } = await client
+		.from('users')
+		.select('session')
+		.eq('id', user?.user?.id)
+		.single();
+	const { data: curr_block, error: block_error } = await client
+		.from('users')
+		.select('block')
+		.eq('id', user?.user?.id)
+		.single();
+	if (session_error || block_error) {
+		console.log('session error: ', session_error);
+		console.log('block error: ', block_error);
+	}
+
 	let { data: notes, error: note_error } = await client
 		.from('notes')
 		.select('*')
-		.eq('date', curr_date);
+		.match({ session: curr_session?.session, block: curr_block?.block });
+
 	console.log('fetched notes: ', notes);
 	if (note_error) {
 		console.log('note fetch error: ', note_error);
@@ -111,12 +122,9 @@ export async function load() {
 		}, {});
 		num_games = Object.keys(games).length;
 	} else {
-		console.log('this should return');
 		games = { '1': [] };
 		num_games = 1;
 	}
-	console.log('games: ', games);
-	console.log('habits: ', habits);
 
 	//return the # of goods and bads per habit
 	return {
@@ -125,6 +133,7 @@ export async function load() {
 		games: games,
 		num_games: num_games,
 		habits: habits,
-		session: session
+		session: curr_session?.session,
+		block: curr_block?.block
 	};
 }

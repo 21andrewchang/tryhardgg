@@ -8,7 +8,7 @@
 		habit = $bindable(),
 		good = $bindable(),
 		tag = $bindable(),
-		game_num = $bindable(),
+		curr_game = $bindable(),
 		...props
 	} = $props();
 	let command = $state(false);
@@ -64,6 +64,13 @@
 		}
 		if (event.metaKey) {
 			command = true;
+		}
+		if (event.metaKey) {
+			command = true;
+		}
+		if (event.key === 'Escape') {
+			props.cancel();
+			event.preventDefault();
 		}
 	}
 	function onKeyUp(event: KeyboardEvent) {
@@ -133,7 +140,7 @@
 					<button
 						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in hover:text-white border-[#202020] bg-[#09090B] text-neutral-200"
 						onclick={() => {
-							habit = index;
+							habit = item.id;
 						}}
 					>
 						<Indicator category={item.category} />
@@ -152,7 +159,7 @@
 					<button
 						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed duration-200 ease-in border-[#202020] bg-[#09090B] text-[#6c6c6c] hover:bg-[#202020] hover:text-[#D3D3D3]"
 						onclick={() => {
-							habit = index;
+							habit = item.id;
 						}}
 					>
 						<Indicator category={item.category} />
@@ -233,7 +240,7 @@
 		</div>
 		<div class="flex justify-between p-3 w-full border-t border-[#202020] bg-black/0">
 			<div class="flex flex-row items-center">
-				<span class="mx-2 mr-4 text-neutral-700">Game {game_num}</span>
+				<span class="mx-2 mr-4 text-neutral-700">Game {curr_game}</span>
 			</div>
 			<button
 				onclick={() => {

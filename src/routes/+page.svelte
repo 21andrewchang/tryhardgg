@@ -59,7 +59,7 @@
 				</button>
 				<button
 					onclick={handleQuiz}
-					class="py-2 px-5 my-4 mx-6 font-medium rounded-md text-white/80 hover:bg-white/10"
+					class="py-2 px-5 my-4 mx-6 font-medium rounded-md duration-200 ease-in text-white/80 hover:bg-white/10"
 				>
 					Find Your Player Archetype
 				</button>
