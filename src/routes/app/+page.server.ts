@@ -20,22 +20,58 @@ async function fetchLibrary() {
 
 		const groupedLibrary = library?.reduce((acc, item) => {
 			if (!acc[item.category]) {
-				acc[item.category] = [];
+				acc[item.category] = {};
 			}
-			acc[item.category].push(item);
+			acc[item.category][item.id] = item;
 			return acc;
 		}, {});
 
 		return groupedLibrary;
 	} catch (err) {
 		console.log('error fetching library', err);
-		return [];
+		return {};
 	}
 }
+type Note = {
+	user_id: string | undefined;
+	title: string;
+	timestamp: string;
+	content: string;
+	habit_id: number;
+	good: boolean;
+	game_num: number;
+	tag: string;
+	session: number;
+	block: number;
+};
+type Habit = {
+	id: number;
+	name: string;
+	category: string;
+};
+type HabitCount = {
+	id: number;
+	name: string;
+	category: string;
+	goodCount: number;
+	badCount: number;
+};
 
-function accumulateNoteResults(notes, habits) {
+function categorizeNotes(notes) {
 	if (notes == null || notes == undefined) return [];
-	const habitList = {};
+	const notes_categorized: Record<string, Note[]> = {};
+	notes.forEach((note) => {
+		notes_categorized[note.habit_id] = [];
+	});
+	notes.forEach((note) => {
+		notes_categorized[note.habit_id].push(note);
+	});
+	return notes_categorized;
+}
+
+function accumulateNoteResults(notes, habits: Habit[]) {
+	const habitList: Record<string, HabitCount> = {};
+	if (notes == null || notes == undefined) return habitList;
 	habits.forEach((habit) => {
 		habitList[habit.id] = {
 			id: habit.id,
@@ -49,7 +85,6 @@ function accumulateNoteResults(notes, habits) {
 		notes.forEach((note) => {
 			const habitId = note.habit_id;
 			const isGood = note.good;
-			console.log('habitList habitid', habitList[habitId]);
 
 			if (habitList[habitId]) {
 				if (isGood) {
@@ -63,9 +98,35 @@ function accumulateNoteResults(notes, habits) {
 	return habitList;
 }
 
+async function getHabitMasteries(userId: string | undefined, habit_ids: string[]) {
+	if (!userId || !habit_ids || habit_ids.length === 0) return {};
+
+	const { data: mastery, error: masteryError } = await client
+		.from('mastery')
+		.select('habit_id, lvl, points')
+		.eq('user_id', userId) // Ensure we fetch only this user's mastery data
+		.in('habit_id', habit_ids); // Filter for specific habit IDs
+
+	if (masteryError) {
+		console.error('Error fetching mastery data:', masteryError);
+		return {};
+	}
+
+	// Convert array to object with habit_id as key
+	const masteryMap = mastery.reduce(
+		(acc, { habit_id, lvl, points }) => {
+			acc[habit_id] = { lvl, points };
+			return acc;
+		},
+		{} as Record<number, { lvl: number; points: number }>
+	);
+
+	return masteryMap;
+}
+
 async function getUserHabits(userId: String | undefined) {
 	if (userId == undefined) {
-		return [];
+		return {};
 	}
 	try {
 		// Fetch the user's habits array
@@ -96,7 +157,6 @@ async function getUserHabits(userId: String | undefined) {
 	}
 }
 
-//creating days should be handled on page load. no need to be in +server.ts
 export async function load() {
 	const { data: user } = await client.auth.getUser();
 
@@ -115,26 +175,28 @@ export async function load() {
 		console.log('block error: ', block_error);
 	}
 
-	let { data: notes, error: note_error } = await client
+	let { data: session_notes, error: note_error } = await client
 		.from('notes')
 		.select('*')
 		.match({ session: curr_session?.session, block: curr_block?.block });
+	let { data: all_notes, error: all_notes_error } = await client.from('notes').select('*');
 
-	console.log('fetched notes: ', notes);
 	if (note_error) {
 		console.log('note fetch error: ', note_error);
 	}
 
-	let habits = accumulateNoteResults(notes, await getUserHabits(user?.user?.id));
-	const library = await fetchLibrary();
+	let categorized_notes = categorizeNotes(all_notes);
+	let habits = accumulateNoteResults(session_notes, await getUserHabits(user?.user?.id));
+	let habit_ids = Object.keys(habits);
+	let mastery = await getHabitMasteries(user?.user?.id, habit_ids);
 
-	console.log(library);
+	const library = await fetchLibrary();
 
 	let games;
 	let num_games;
 
-	if (notes && notes.length > 0) {
-		games = notes?.reduce((acc, note) => {
+	if (session_notes && session_notes.length > 0) {
+		games = session_notes?.reduce((acc, note) => {
 			const gameId = note.game_num || 'no_game';
 			if (!acc[gameId]) {
 				acc[gameId] = [];
@@ -151,12 +213,15 @@ export async function load() {
 	//return the # of goods and bads per habit
 	return {
 		user: user.user,
-		notes: notes,
+		session_notes: session_notes,
+		all_notes: all_notes,
 		games: games,
 		num_games: num_games,
 		habits: habits,
+		mastery: mastery,
 		session: curr_session?.session,
 		block: curr_block?.block,
-		library: library
+		library: library,
+		categorized_notes: categorized_notes
 	};
 }

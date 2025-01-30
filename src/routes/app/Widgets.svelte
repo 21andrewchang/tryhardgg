@@ -16,7 +16,7 @@
 
 <!-- Widgets and Logout Button -->
 <div class="flex flex-col mb-4">
-	<text class="mb-2 text-md text-[#D3D3D3]">Block Focuses</text>
+	<text class="mb-2 text-md text-[#6C6C6C]">Block Focuses</text>
 	<div class="flex flex-row justify-between space-x-4 w-full">
 		{#each habit_widgets as item}
 			<button

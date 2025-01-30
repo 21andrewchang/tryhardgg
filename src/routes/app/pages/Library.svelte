@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Indicator from './Indicator.svelte';
+	import Indicator from '../Indicator.svelte';
 	let props = $props();
 	type Habit = {
 		id: number;
@@ -25,7 +25,7 @@
 			<text class="mb-2 text-md text-[#D3D3D3]">{category.name}</text>
 			<!-- Grid Container -->
 			<div class="grid grid-cols-2 gap-4 w-full">
-				{#each library[category.color] as habit}
+				{#each Object.values(library[category.color]) as habit}
 					<button
 						class="flex flex-col flex-grow p-4 py-2 rounded-lg border border-[#202020] bg-[#09090B]"
 					>

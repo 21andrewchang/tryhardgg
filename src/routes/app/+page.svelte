@@ -6,8 +6,10 @@
 	import Widgets from './Widgets.svelte';
 	import GamesList from './GamesList.svelte';
 	import SessionSummary from './SessionSummary.svelte';
-	import Library from './Library.svelte';
-	import Dashboard from './Dashboard.svelte';
+	import Library from './pages/Library.svelte';
+	import Dashboard from './pages/Dashboard.svelte';
+	import Habit from './pages/Habit.svelte';
+	import AllNotes from './pages/AllNotes.svelte';
 
 	type Note = {
 		user_id: string | undefined;
@@ -37,12 +39,16 @@
 
 	let editorVisable = $state(false);
 	let games: Games = $state(data.games);
+	let mastery = $state(data.mastery);
 	let curr_game = $state(data.num_games);
 	let total_notes = $derived(Object.values(games).reduce((sum, notes) => sum + notes.length, 0));
+	let all_notes = $state(data.all_notes);
 
 	let session = $state(data.session);
 	let block = $state(data.block);
 	let habits: Record<string, HabitCount> = $state(data.habits);
+
+	const categorized_notes = data.categorized_notes;
 
 	let sidebar = $state(true);
 
@@ -51,7 +57,6 @@
 	let title = $state('');
 	let content = $state('');
 	let timestamp = $state('');
-	//0 is unset habit
 	let habit_id = $state(0);
 	let good = $state(false);
 	let tag = $state('');
@@ -82,7 +87,30 @@
 		}
 	}
 
-	// NEED TO UPDATE THE GOOD/BAD COUNT OF THE HABIT TAGGED IN THE NOTE
+	// TODO - use good and habit_id to calculate habit mastery
+	async function handleMastery(id, endSession: Boolean) {
+		const masteryUpdate = {
+			user_id: user_id,
+			habit_id: id,
+			good: good,
+			endSession: endSession
+		};
+
+		const res = await fetch(`/app/mastery`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(masteryUpdate)
+		});
+		const result = await res.json();
+		const points_update = await result.points;
+		console.log('passing in id: ', id);
+
+		mastery[id].points = points_update;
+		mastery = mastery;
+		console.log('handle mastery res: ', result);
+	}
 	async function handleNote() {
 		const newNote: Note = {
 			user_id: user_id,
@@ -98,7 +126,7 @@
 		};
 		if (content != '') {
 			games[curr_game] = [...(games[curr_game] ?? []), newNote];
-
+			handleMastery(habit_id, false);
 			const res = await fetch(`/app`, {
 				method: 'POST',
 				headers: {
@@ -106,7 +134,6 @@
 				},
 				body: JSON.stringify(newNote)
 			});
-			console.log(res);
 			if (habit_id) {
 				if (habit_id) {
 					habits[habit_id][good ? 'goodCount' : 'badCount'] += 1;
@@ -120,64 +147,72 @@
 			editorVisable = false;
 		}
 	}
+
 	function nextGame() {
 		if (games[curr_game] && games[curr_game].length > 0) {
 			curr_game += 1;
 			games[curr_game] = [];
 		}
-		editorVisable = true;
 	}
 	function sidebarT() {
 		sidebar = !sidebar;
 	}
 
-	let summaryVisable = $state(false);
+	let summaryVisable = $state(true);
 	function finishSession() {
 		summaryVisable = true;
 	}
 	async function nextSession() {
-		session += 1;
-		const body = {
-			user_id: user_id,
-			session: session
-		};
-		const res = await fetch(`/app/session`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(body)
-		});
-		console.log(res);
-		games = { '1': [] };
-		curr_game = 1;
-		summaryVisable = false;
-		Object.values(habits).forEach((habit) => {
-			habit.goodCount = 0;
-			habit.badCount = 0;
-		});
+		if (games[1] && games[2] && games[3]) {
+			session += 1;
+			const body = {
+				user_id: user_id,
+				session: session
+			};
+			const res = await fetch(`/app/session`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(body)
+			});
+			console.log(res);
+			games = { '1': [] };
+			curr_game = 1;
+			summaryVisable = false;
+			Object.values(habits).forEach((habit) => {
+				habit.goodCount = 0;
+				habit.badCount = 0;
+			});
+		}
+		return;
 	}
 
 	let curr_page = $state('session');
 	function showPage(page: string) {
 		curr_page = page;
 	}
+	let selected_habit = $state();
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
 <div class="flex overflow-hidden h-screen">
-	<Sidebar {sidebar} {showPage} {session} {block} />
+	<Sidebar {sidebar} {showPage} {session} {block} {curr_page} {habits} bind:selected_habit />
 	<div class="flex flex-col p-8 w-screen h-screen transition-all duration-300 ease-in-out">
-		<TopBar {sidebarT} {session} {block} {curr_page} />
+		<TopBar {sidebarT} {session} {block} {curr_page} {selected_habit} />
 		{#if curr_page == 'session'}
 			<Widgets {habits} />
-			<GamesList {editorVisable} {games} {habits} />
+			<GamesList {games} {habits} />
 			<BottomButtons {createNote} {nextGame} {curr_game} {finishSession} {summaryVisable} />
+		{:else if curr_page == 'all_notes'}
+			<AllNotes {all_notes} {habits} />
 		{:else if curr_page == 'library'}
 			<Library {habits} {library} />
 		{:else if curr_page == 'dashboard'}
 			<Dashboard />
+		{:else if curr_page == 'habit'}
+			<Habit {categorized_notes} {selected_habit} {library} {habits} {mastery} />
 		{/if}
 	</div>
 	{#if summaryVisable}

@@ -16,13 +16,19 @@
 	type Games = {
 		[key: string]: Note[];
 	};
-	let props = $props();
-	let games: Games = props.games;
+	type HabitCount = {
+		id: number;
+		name: string;
+		category: string;
+		goodCount: number;
+		badCount: number;
+	};
+	let { games, habits }: { games: Games; habits: Record<string, HabitCount> } = $props();
 
 	let collapsed: Boolean[] = $state([]);
 </script>
 
-<text class="mb-2 text-md text-[#D3D3D3]">Session Notes</text>
+<text class="mb-2 text-md text-[#6C6C6C]">Session Notes</text>
 <div
 	class="overflow-y-auto flex-col flex-1 rounded-lg border custom-scrollbar border-[#202020] bg-[#09090B]"
 >
@@ -55,7 +61,7 @@
 				<div transition:slide class="mt-3">
 					{#if notes.length > 0}
 						{#each notes as note}
-							<NoteView {note} habits={props.habits} />
+							<NoteView {note} {habits} />
 						{/each}
 					{:else if notes.length === 0}
 						<div class="flex flex-row justify-center items-center" transition:fade>

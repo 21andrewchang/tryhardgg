@@ -25,7 +25,6 @@
 	let tags = [{ name: '' }, { name: 'Early Game' }, { name: 'Mid Game' }, { name: 'Late Game' }];
 	let habits: Habit[] = Object.values(props.habits);
 
-	console.log(props.habits);
 
 	function focus(element: HTMLElement) {
 		element.focus();
@@ -153,7 +152,7 @@
 		<div class="flex flex-row self-start mt-10 mb-2 ml-4 space-x-2">
 			<!-- habits -->
 			<button
-				class="flex relative flex-row items-center px-4 space-x-2 rounded-lg border duration-200 ease-in border-[#202020] bg-[#09090B] text-neutral-200 hover:bg-[#202020]"
+				class="flex relative flex-row items-center px-4 space-x-2 rounded-lg border duration-200 ease-in border-[#202020] bg-[#09090B] text-neutral-200 hover:bg-[#202022]"
 				onclick={() => {
 					good = !good;
 				}}
@@ -178,7 +177,7 @@
 			{#each habits as item, index}
 				{#if habit_id == item.id}
 					<button
-						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in border-[#202020] bg-[#202020] text-neutral-200 hover:text-[#D3D3D3]"
+						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in border-[#202022] bg-[#202022] text-neutral-200 hover:text-[#D3D3D3]"
 						onclick={() => {
 							habit_id = item.id;
 						}}
@@ -197,7 +196,7 @@
 					</button>
 				{:else}
 					<button
-						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed duration-200 ease-in border-[#202020] bg-[#09090B] text-[#6c6c6c] hover:bg-[#202020] hover:text-[#D3D3D3]"
+						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border border-dashed duration-200 ease-in border-[#202020] bg-[#09090B] text-[#6c6c6c] hover:bg-[#202022] hover:text-[#D3D3D3]"
 						onclick={() => {
 							habit_id = item.id;
 						}}
