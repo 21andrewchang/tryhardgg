@@ -5,6 +5,8 @@
 	import { fade, fly, slide } from 'svelte/transition';
 	import sidebar from '$lib/images/sidebar.svg';
 	import Indicator from './Indicator.svelte';
+
+	let sessions = [0, 0, 0, 0, 0, 0];
 </script>
 
 <div class="flex mb-4 space-x-4">
@@ -16,7 +18,7 @@
 		</div>
 	</button>
 	<div
-		class="flex flex-grow items-center px-4 text-lg font-bold rounded-xl border shadow-md duration-200 ease-in-out border-[#202020] bg-[#09090B] text-[#FAFAFA]"
+		class="flex flex-grow justify-between items-center px-4 text-lg font-bold rounded-xl border shadow-md duration-200 ease-in-out border-[#202020] bg-[#09090B] text-[#FAFAFA]"
 	>
 		{#if props.curr_page == 'session'}
 			<div in:fly={{ duration: 300, x: -20 }}>
@@ -45,7 +47,22 @@
 				<text class="py-2 mx-1">{props.selected_habit.name}</text>
 			</div>
 		{/if}
+		<!-- Square Indicators -->
+		{#if props.curr_page == 'session'}
+			<div class="flex space-x-2" transition:fade={{ duration: 100 }}>
+				{#each [1, 2, 3, 4, 5, 6] as num, index}
+					{#if num == props.session}
+						<div class="w-4 h-4 rounded-sm bg-[#FAFAFA]"></div>
+					{:else if num < props.session}
+						<div class="w-4 h-4 rounded-sm bg-[#9C9C9C]"></div>
+					{:else if num > props.session}
+						<div class="w-4 h-4 rounded-sm bg-[#131315]"></div>
+					{/if}
+				{/each}
+			</div>
+		{/if}
 	</div>
+
 	<div
 		class="flex justify-between items-center px-3 space-x-10 text-lg rounded-xl border duration-200 ease-in-out border-[#202020] bg-[#09090B] text-[#D3D3D3]"
 	>

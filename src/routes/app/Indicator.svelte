@@ -14,7 +14,19 @@
 <!-- 	></div> -->
 <!-- {/if} -->
 
-{#if props.category == 'red'}
+{#if props.size == 'xl'}
+	{#if props.category == 'red'}
+		<div class="w-3 h-3 rounded-full bg-[#FE2C2D]"></div>
+	{:else if props.category == 'green'}
+		<div class="w-3 h-3 rounded-full bg-[#2BC813]"></div>
+	{:else if props.category == 'blue'}
+		<div class="w-3 h-3 rounded-full bg-[#2C83FF]"></div>
+	{:else if props.category == 'yellow'}
+		<div class="w-3 h-3 rounded-full bg-[#FABD05]"></div>
+	{:else}
+		<div class="w-3 h-3 rounded-full bg-neutral-200"></div>
+	{/if}
+{:else if props.category == 'red'}
 	<div class="w-2 h-2 rounded-full bg-[#FE2C2D]"></div>
 {:else if props.category == 'green'}
 	<div class="w-2 h-2 rounded-full bg-[#2BC813]"></div>

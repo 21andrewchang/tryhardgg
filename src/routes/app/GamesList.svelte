@@ -28,7 +28,7 @@
 	let collapsed: Boolean[] = $state([]);
 </script>
 
-<text class="mb-2 text-md text-[#6C6C6C]">Session Notes</text>
+<text class="mb-1 text-sm text-[#6C6C6C]">Session Notes</text>
 <div
 	class="overflow-y-auto flex-col flex-1 rounded-lg border custom-scrollbar border-[#202020] bg-[#09090B]"
 >

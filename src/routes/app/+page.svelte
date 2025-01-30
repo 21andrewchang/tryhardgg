@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import BottomButtons from './BottomButtons.svelte';
 	import TopBar from './TopBar.svelte';
 	import NoteEditor from './NoteEditor.svelte';
@@ -69,7 +70,7 @@
 		editorVisable = false;
 	}
 	function onKeyDown(event: KeyboardEvent) {
-		if (!editorVisable) {
+		if (!editorVisable && curr_page == 'session' && !summaryVisable) {
 			switch (event.key) {
 				case 'n':
 					createNote();
@@ -158,34 +159,36 @@
 		sidebar = !sidebar;
 	}
 
-	let summaryVisable = $state(true);
+	let summaryVisable = $state(false);
 	function finishSession() {
 		summaryVisable = true;
 	}
 	async function nextSession() {
-		if (games[1] && games[2] && games[3]) {
-			session += 1;
-			const body = {
-				user_id: user_id,
-				session: session
-			};
-			const res = await fetch(`/app/session`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(body)
-			});
-			console.log(res);
-			games = { '1': [] };
-			curr_game = 1;
-			summaryVisable = false;
-			Object.values(habits).forEach((habit) => {
-				habit.goodCount = 0;
-				habit.badCount = 0;
-			});
-		}
-		return;
+		// 	if (games[1] && games[2] && games[3]) {
+		// 		session += 1;
+		// 		const body = {
+		// 			user_id: user_id,
+		// 			session: session
+		// 		};
+		// 		const res = await fetch(`/app/session`, {
+		// 			method: 'POST',
+		// 			headers: {
+		// 				'Content-Type': 'application/json'
+		// 			},
+		// 			body: JSON.stringify(body)
+		// 		});
+		// 		console.log(res);
+		// 		games = { '1': [] };
+		// 		curr_game = 1;
+		// 		summaryVisable = false;
+		// 		Object.values(habits).forEach((habit) => {
+		// 			habit.goodCount = 0;
+		// 			habit.badCount = 0;
+		// 		});
+		// 	}
+		// 	return;
+		// }
+		summaryVisable = false;
 	}
 
 	let curr_page = $state('session');
@@ -193,13 +196,26 @@
 		curr_page = page;
 	}
 	let selected_habit = $state();
+	onMount(() => {
+		console.log(window.innerWidth);
+		const checkWidth = () => {
+			if (window.innerWidth < 1200) {
+				sidebar = false;
+			} else {
+				sidebar = true;
+			}
+		};
+		checkWidth();
+		window.addEventListener('resize', checkWidth);
+		return () => window.removeEventListener('resize', checkWidth);
+	});
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
-<div class="flex overflow-hidden h-screen">
+<div class="flex overflow-hidden w-screen h-screen">
 	<Sidebar {sidebar} {showPage} {session} {block} {curr_page} {habits} bind:selected_habit />
-	<div class="flex flex-col p-8 w-screen h-screen transition-all duration-300 ease-in-out">
+	<div class="flex flex-col p-8 w-full h-screen transition-all duration-300 ease-in-out">
 		<TopBar {sidebarT} {session} {block} {curr_page} {selected_habit} />
 		{#if curr_page == 'session'}
 			<Widgets {habits} />
@@ -216,7 +232,7 @@
 		{/if}
 	</div>
 	{#if summaryVisable}
-		<SessionSummary {habits} {total_notes} {nextSession} />
+		<SessionSummary {habits} {total_notes} {nextSession} {mastery} />
 	{/if}
 	{#if editorVisable}
 		<NoteEditor

@@ -5,33 +5,42 @@
 	let { note, habits } = $props();
 </script>
 
-<div class="flex flex-row justify-between items-center">
-	<div class="flex flex-row items-center space-x-2">
-		<!-- timestamp -->
-		<div class="flex flex-row items-center text-center">
+<div class="flex flex-row justify-between items-center w-full">
+	<!-- Left Side: Timestamp, Title, and Truncated Content -->
+	<div class="flex overflow-hidden items-center space-x-2 min-w-0">
+		<!-- Timestamp -->
+		<div class="flex-shrink-0">
 			{#if note.timestamp}
 				<span class="text-xs font-thin text-neutral-400">{note.timestamp}</span>
 			{:else}
 				<span class="px-2 text-xs font-thin text-neutral-400">---</span>
 			{/if}
 		</div>
-		<!-- note title -->
-		<div class="flex flex-row items-center text-center">
+
+		<!-- Note Title -->
+		<div class="flex-shrink-0">
 			{#if note.title}
 				<span class="text-xs font-semibold text-[#FAFAFA]">{note.title}</span>
 			{:else}
-				<span class="px-1 text-xs font-semibold text-[#FAFAFA]">---</span>
+				<span class="px-2 text-xs font-semibold text-[#FAFAFA]">---</span>
 			{/if}
 		</div>
-		<!-- note content -->
-		<h1 class="py-3 mb-0 text-xs font-light text-[#fafafa]">{note.content}</h1>
-	</div>
-	<!-- tags -->
-	<div class="flex flex-row space-x-2">
-		{#if note.good != null}
-			<div
-				class="flex flex-row justify-center items-center py-2 px-3 rounded-full border border-[#202020]"
+
+		<!-- Truncated Note Content -->
+		<div class="flex-grow pr-2 min-w-0">
+			<h1
+				class="overflow-hidden py-3 text-xs font-light whitespace-nowrap text-ellipsis text-[#FAFAFA]"
 			>
+				{note.content}
+			</h1>
+		</div>
+	</div>
+
+	<!-- Right Side: Tags (Fixed Width, No Shrinking) -->
+	<div class="flex flex-shrink-0 items-center space-x-2">
+		<!-- Thumbs (Good or Bad) -->
+		{#if note.good != null}
+			<div class="flex justify-center items-center py-2 px-3 rounded-full border border-[#202020]">
 				<img
 					src={thumb}
 					alt="thumb"
@@ -40,18 +49,18 @@
 				/>
 			</div>
 		{/if}
+
+		<!-- Habit Tag -->
 		{#if habits[note.habit_id]}
-			<div
-				class="flex flex-row items-center py-1 px-3 space-x-2 text-center rounded-full border border-[#202020]"
-			>
+			<div class="flex items-center py-1 px-3 space-x-2 rounded-full border border-[#202020]">
 				<Indicator category={habits[note.habit_id].category} />
 				<span class="text-[9px] text-neutral-400">{habits[note.habit_id].name}</span>
 			</div>
 		{/if}
+
+		<!-- Note Tag -->
 		{#if note.tag}
-			<div
-				class="flex flex-row items-center py-1 px-3 text-center rounded-full border border-[#202020]"
-			>
+			<div class="flex items-center py-1 px-3 rounded-full border border-[#202020]">
 				<span class="text-[8px] text-neutral-400">{note.tag}</span>
 			</div>
 		{/if}

@@ -6,12 +6,13 @@
 
 <div class="flex justify-end pt-1 mt-2 space-x-4 bg-black/0">
 	{#if remainder != 0}
-		<div
+		<button
 			class="flex flex-grow justify-center items-center py-1 px-4 text-xs rounded-lg border shadow-md duration-200 ease-in-out border-[#202020] bg-[#09090B] text-[#D3D3D3]"
+			onclick={() => props.finishSession()}
 		>
 			{remainder}
 			{remainder == 1 ? 'Game' : 'Games'} Left
-		</div>
+		</button>
 		<button
 			onclick={() => {
 				if (props.curr_game < 3) {
