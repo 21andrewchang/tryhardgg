@@ -3,11 +3,15 @@
 	import thumb from '$lib/images/thumb.svg';
 
 	let { note, habits } = $props();
+	const truncateText = (text, maxLength = 50) => {
+		if (!text) return '---';
+		return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+	};
 </script>
 
-<div class="flex flex-row justify-between items-center w-full">
+<div class="flex flex-row flex-1 justify-between items-center py-3 w-full max-w-full">
 	<!-- Left Side: Timestamp, Title, and Truncated Content -->
-	<div class="flex overflow-hidden items-center space-x-2 min-w-0">
+	<div class="flex overflow-hidden flex-1 items-center space-x-2 min-w-0">
 		<!-- Timestamp -->
 		<div class="flex-shrink-0">
 			{#if note.timestamp}
@@ -27,9 +31,9 @@
 		</div>
 
 		<!-- Truncated Note Content -->
-		<div class="flex-grow pr-2 min-w-0">
+		<div class="flex pr-2 min-w-0 max-w-full">
 			<h1
-				class="overflow-hidden py-3 text-xs font-light whitespace-nowrap text-ellipsis text-[#FAFAFA]"
+				class="overflow-hidden mt-1 text-xs font-light whitespace-nowrap text-ellipsis text-[#FAFAFA]"
 			>
 				{note.content}
 			</h1>
@@ -37,7 +41,7 @@
 	</div>
 
 	<!-- Right Side: Tags (Fixed Width, No Shrinking) -->
-	<div class="flex flex-shrink-0 items-center space-x-2">
+	<div class="flex flex-shrink-0 items-center space-x-2 max-w-full">
 		<!-- Thumbs (Good or Bad) -->
 		{#if note.good != null}
 			<div class="flex justify-center items-center py-2 px-3 rounded-full border border-[#202020]">

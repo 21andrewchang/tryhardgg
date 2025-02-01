@@ -37,7 +37,7 @@ export function calculateArchetype(responses: number[]): string[] {
 			1: { facilitator: 2, realist: 1 }
 		},
 		q2: {
-			5: { investor: 2, realist: 1 },
+			5: { investor: 1, realist: 1 },
 			4: { investor: 1, realist: 0.75 },
 			3: { gambler: 0.5, realist: 0.5 },
 			2: { gambler: 1, theorist: 0.5 },
@@ -54,8 +54,8 @@ export function calculateArchetype(responses: number[]): string[] {
 			5: { realist: 0.5, investor: 1 },
 			4: { realist: 0.25, investor: 0.5 },
 			3: { theorist: 0.5, gambler: 0.25 },
-			2: { theorist: 0.75, gambler: 0.5 },
-			1: { theorist: 1.25, gambler: 0.75 }
+			2: { theorist: 0.5, gambler: 0.5 },
+			1: { theorist: 0.75, gambler: 0.75 }
 		}
 	};
 
@@ -85,30 +85,151 @@ export function calculateArchetype(responses: number[]): string[] {
 	return archetype;
 }
 
-export function getArchetype(archetype: string[]): string {
-	const archetypes: Map<string[], string> = new Map([
-		[['solo_carry', 'theorist', 'pacifist', 'investor'], 'smooth_operator'],
-		[['facilitator', 'theorist', 'pacifist', 'investor'], 'lone_wolf'],
-		[['solo_carry', 'theorist', 'pacifist', 'gambler'], 'agurin_wannabe'],
-		[['facilitator', 'theorist', 'pacifist', 'gambler'], 'strategist'],
-		[['solo_carry', 'theorist', 'blood_thirsty', 'investor'], 'mr_1v9'],
-		[['facilitator', 'theorist', 'blood_thirsty', 'investor'], 'faker???'],
-		[['solo_carry', 'theorist', 'blood_thirsty', 'gambler'], 'elo_terrorist'],
-		[['facilitator', 'theorist', 'blood_thirsty', 'gambler'], 'playmaker'],
-		[['solo_carry', 'realist', 'blood_thirsty', 'investor'], 'vacuum_cleaner'],
-		[['facilitator', 'realist', 'blood_thirsty', 'investor'], 'ksing_support'],
-		[['solo_carry', 'realist', 'pacifist', 'investor'], 'stat_padder'],
-		[['facilitator', 'realist', 'pacifist', 'investor'], 'pocket_yuumi'],
-		[['solo_carry', 'realist', 'blood_thirsty', 'gambler'], 'super_server'],
-		[['facilitator', 'realist', 'blood_thirsty', 'gambler'], 'adhd player'],
-		[['solo_carry', 'realist', 'pacifist', 'gambler'], 'ints for towers'],
-		[['facilitator', 'realist', 'pacifist', 'gambler'], 'shitty engager']
-	]);
+export function getArchetype(archetype: string[]): {
+	id: string;
+	name: string;
+	group: string;
+	category: string;
+	color: string;
+} {
+	const archetypes: {
+		traits: string[];
+		name: string;
+		group: string;
+		category: string;
+		color: string;
+	}[] = [
+		{
+			traits: ['solo_carry', 'theorist', 'pacifist', 'investor'],
+			name: 'Smooth Operator',
+			group: 'Architects',
+			category: 'Information Gathering',
+			color: 'blue'
+		},
+		{
+			traits: ['facilitator', 'theorist', 'pacifist', 'investor'],
+			name: 'Lone Wolf',
+			group: 'Architects',
+			category: 'Information Gathering',
+			color: 'blue'
+		},
+		{
+			traits: ['solo_carry', 'theorist', 'pacifist', 'gambler'],
+			name: 'Agurin Wannabe',
+			group: 'Architects',
+			category: 'Information Gathering',
+			color: 'blue'
+		},
+		{
+			traits: ['facilitator', 'theorist', 'pacifist', 'gambler'],
+			name: 'Strategist',
+			group: 'Architects',
+			category: 'Information Gathering',
+			color: 'blue'
+		},
+		{
+			traits: ['solo_carry', 'theorist', 'blood_thirsty', 'investor'],
+			name: 'Mr 1v9',
+			group: 'Warlords',
+			category: 'Fighting and Mechanics',
+			color: 'red'
+		},
+		{
+			traits: ['facilitator', 'theorist', 'blood_thirsty', 'investor'],
+			name: 'Faker???',
+			group: 'Warlords',
+			category: 'Fighting and Mechanics',
+			color: 'red'
+		},
+		{
+			traits: ['solo_carry', 'theorist', 'blood_thirsty', 'gambler'],
+			name: 'Elo Terrorist',
+			group: 'Warlords',
+			category: 'Fighting and Mechanics',
+			color: 'red'
+		},
+		{
+			traits: ['facilitator', 'theorist', 'blood_thirsty', 'gambler'],
+			name: 'Playmaker',
+			group: 'Warlords',
+			category: 'Fighting and Mechanics',
+			color: 'red'
+		},
+		{
+			traits: ['solo_carry', 'realist', 'blood_thirsty', 'investor'],
+			name: 'Vacuum Cleaner',
+			group: 'Guardians',
+			category: 'Income and Strength',
+			color: 'green'
+		},
+		{
+			traits: ['facilitator', 'realist', 'blood_thirsty', 'investor'],
+			name: 'KSing Support',
+			group: 'Guardians',
+			category: 'Income and Strength',
+			color: 'green'
+		},
+		{
+			traits: ['solo_carry', 'realist', 'pacifist', 'investor'],
+			name: 'Stat Padder',
+			group: 'Guardians',
+			category: 'Income and Strength',
+			color: 'green'
+		},
+		{
+			traits: ['facilitator', 'realist', 'pacifist', 'investor'],
+			name: 'Pocket Yuumi',
+			group: 'Guardians',
+			category: 'Income and Strength',
+			color: 'green'
+		},
+		{
+			traits: ['solo_carry', 'realist', 'blood_thirsty', 'gambler'],
+			name: 'Super Server',
+			group: 'Opportunists',
+			category: 'Decision Making',
+			color: 'yellow'
+		},
+		{
+			traits: ['facilitator', 'realist', 'blood_thirsty', 'gambler'],
+			name: 'ADHD Player',
+			group: 'Opportunists',
+			category: 'Decision Making',
+			color: 'yellow'
+		},
+		{
+			traits: ['solo_carry', 'realist', 'pacifist', 'gambler'],
+			name: 'Ints for Towers',
+			group: 'Opportunists',
+			category: 'Decision Making',
+			color: 'yellow'
+		},
+		{
+			traits: ['facilitator', 'realist', 'pacifist', 'gambler'],
+			name: 'Shitty Engager',
+			group: 'Opportunists',
+			category: 'Decision Making',
+			color: 'yellow'
+		}
+	];
 
-	for (const [key, endpoint] of archetypes) {
-		if (key.every((trait) => archetype.includes(trait))) {
-			return endpoint;
+	for (const { traits, name, group, category, color } of archetypes) {
+		if (traits.every((trait) => archetype.includes(trait))) {
+			return {
+				id: traits.map((trait) => trait[0]).join(''),
+				name,
+				group,
+				category,
+				color
+			};
 		}
 	}
-	return 'Something is wrong...';
+
+	return {
+		id: 'unknown',
+		name: 'Something is wrong...',
+		group: 'unknown',
+		category: 'Unknown',
+		color: '#FFFFFF'
+	};
 }

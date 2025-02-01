@@ -6,10 +6,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	const responses = JSON.parse(formData.get('responses') as string);
 
 	const archetypeArray = calculateArchetype(responses);
-	console.log(archetypeArray);
 	const archetype = getArchetype(archetypeArray);
 
-	cookies.set('archetype', archetype, {
+	cookies.set('archetype', JSON.stringify(archetype), {
 		path: '/'
 	});
 

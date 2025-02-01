@@ -85,6 +85,7 @@ function accumulateNoteResults(notes, habits: Habit[]) {
 		notes.forEach((note) => {
 			const habitId = note.habit_id;
 			const isGood = note.good;
+			console.log(isGood);
 
 			if (habitList[habitId]) {
 				if (isGood) {
@@ -95,6 +96,7 @@ function accumulateNoteResults(notes, habits: Habit[]) {
 			}
 		});
 	}
+	console.log(habitList);
 	return habitList;
 }
 
@@ -170,6 +172,11 @@ export async function load() {
 		.select('block')
 		.eq('id', user?.user?.id)
 		.single();
+	const { data: user_lvl, error: lvl_error } = await client
+		.from('users')
+		.select('lvl')
+		.eq('id', user?.user?.id)
+		.single();
 	if (session_error || block_error) {
 		console.log('session error: ', session_error);
 		console.log('block error: ', block_error);
@@ -222,6 +229,7 @@ export async function load() {
 		session: curr_session?.session,
 		block: curr_block?.block,
 		library: library,
-		categorized_notes: categorized_notes
+		categorized_notes: categorized_notes,
+		user_lvl: user_lvl?.lvl
 	};
 }

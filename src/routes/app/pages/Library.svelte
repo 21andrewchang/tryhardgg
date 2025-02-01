@@ -11,10 +11,10 @@
 	type Library = Record<string, Habit[]>;
 
 	const categories = [
-		{ name: 'Decisions', color: 'yellow' },
-		{ name: 'Fighting', color: 'red' },
-		{ name: 'Information', color: 'blue' },
-		{ name: 'Strength', color: 'green' }
+		{ name: 'Decision Making', color: 'yellow' },
+		{ name: 'Fighting and Mechanics', color: 'red' },
+		{ name: 'Information Gathering', color: 'blue' },
+		{ name: 'Income and Strength', color: 'green' }
 	];
 	const library: Library = props.library;
 </script>

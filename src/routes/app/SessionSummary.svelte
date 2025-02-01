@@ -3,9 +3,15 @@
 	import thumb from '$lib/images/thumb.svg';
 	import Indicator from './Indicator.svelte';
 	import { cubicOut } from 'svelte/easing';
+	import up from '$lib/images/up_green.svg';
 
 	let props = $props();
 	let habits = Object.values(props.habits);
+	let leveledUpMastery = $derived(props.leveledUpMastery);
+
+	console.log('summary opened');
+	$inspect(props.mastery);
+	$inspect(leveledUpMastery);
 </script>
 
 <!-- Background Container -->
@@ -14,25 +20,25 @@
 	in:fade={{ duration: 300 }}
 >
 	<!-- Title -->
-	<text class="self-start mb-6 text-4xl font-medium text-[#FAFAFA]">Session Summary</text>
+	<div class="self-start mb-6 text-4xl font-medium text-[#FAFAFA]">Session Summary</div>
 
 	<!-- Top Stats Row -->
 	<div class="flex flex-row justify-between space-x-6">
-		{#each ['Total Notes', 'Total Notes Taken', 'Total Notes Taken'] as label, index}
+		{#each ['Total Notes', 'Games Played'] as label, index}
 			<div
 				in:fly|global={{ y: 50, duration: 300, delay: 300 + index * 100, easing: cubicOut }}
 				class="flex flex-col justify-between items-center py-2 px-8 w-full rounded-xl border border-[#202020] bg-[#09090B]"
 			>
 				<text class="self-start my-2 text-sm text-[#FAFAFA]">{label}</text>
 				<text class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]"
-					>{props.total_notes}</text
+					>{index == 0 ? props.total_notes : 3}</text
 				>
 			</div>
 		{/each}
 	</div>
 
 	<!-- Habit List Wrapper -->
-	<div class="flex flex-col flex-grow mt-6 space-y-6">
+	<div class="flex flex-col flex-grow mt-10 space-y-10">
 		{#each habits as habit, index}
 			<div
 				in:fly|global={{ y: 50, duration: 300, delay: 700 + index * 100, easing: cubicOut }}
@@ -66,17 +72,43 @@
 						class="flex flex-col justify-between items-center py-2 px-8 w-full rounded-xl border border-[#202020] bg-[#09090B]"
 					>
 						<text class="self-start my-2 text-sm text-[#FAFAFA]">Mastery Level</text>
-						<text class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]"
-							>{props.mastery[habit.id].lvl}</text
-						>
+						{#if leveledUpMastery[habit.id]}
+							<div class="flex flex-row items-center self-start space-x-2">
+								<div class="relative self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
+									{leveledUpMastery[habit.id].lvl}
+								</div>
+								<img src={up} alt="up" class="h-[20px] w-[20px]" />
+							</div>
+						{:else}
+							<div class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
+								{props.mastery[habit.id].lvl}
+							</div>
+						{/if}
 					</div>
 					<div
 						class="flex flex-col justify-between items-center py-2 px-8 w-full rounded-xl border border-[#202020] bg-[#09090B]"
 					>
 						<text class="self-start my-2 text-sm text-[#FAFAFA]">Mastery Points</text>
-						<text class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]"
-							>{props.mastery[habit.id].points}</text
-						>
+						{#if leveledUpMastery[habit.id]}
+							<div class="flex flex-row items-center self-start space-x-2">
+								<div class="relative self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
+									{leveledUpMastery[habit.id].points}
+								</div>
+							</div>
+						{:else}
+							<div class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
+								{props.mastery[habit.id].points}
+							</div>
+						{/if}
+					</div>
+					<div
+						class="flex flex-col justify-between items-center py-2 px-8 w-full rounded-xl border border-[#202020] bg-[#09090B]"
+					>
+						<text class="self-start my-2 text-sm text-[#FAFAFA]">Notes Tagged</text>
+
+						<div class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
+							{habit.goodCount + habit.badCount}
+						</div>
 					</div>
 				</div>
 			</div>

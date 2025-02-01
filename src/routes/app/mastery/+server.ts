@@ -18,7 +18,7 @@ async function handleNewNote(user_id: string, habit_id: number, good: boolean) {
 	let { lvl, points } = data;
 	console.log('lvl: ', lvl);
 
-	let pointsEarned = good ? 4 : Math.max(6 - lvl, -1);
+	let pointsEarned = good ? 10 : Math.max(6 - lvl, -1);
 
 	points += pointsEarned;
 	console.log('points: ', points);

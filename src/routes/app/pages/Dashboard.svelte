@@ -33,4 +33,14 @@
 			{/each}
 		</div>
 	</div>
+	<text class="mb-2 text-xl font-medium text-[#D3D3D3]">Beginner</text>
+	<text class="mb-2 text-xl text-[#D3D3D3]">Focus on one habit in one category</text>
+	<text class="mb-2 text-xl font-medium text-[#D3D3D3]">Novice</text>
+	<text class="mb-2 text-xl text-[#D3D3D3]">Focus on one habit in two categories</text>
+	<text class="mb-2 text-xl font-medium text-[#D3D3D3]">Intermediate</text>
+	<text class="mb-2 text-xl text-[#D3D3D3]">Focus on one habit in three categories</text>
+	<text class="mb-2 text-xl font-medium text-[#D3D3D3]">Advanced</text>
+	<text class="mb-2 text-xl text-[#D3D3D3]">Focus on one habit for four different categories</text>
+	<text class="mb-2 text-xl font-medium text-[#D3D3D3]">Expert</text>
+	<text class="mb-2 text-xl text-[#D3D3D3]">Focus on multiple habits 4 max</text>
 </div>

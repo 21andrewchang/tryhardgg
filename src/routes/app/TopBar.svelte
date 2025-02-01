@@ -37,7 +37,7 @@
 			<div in:fly={{ duration: 300, x: -20 }}>
 				<text class="py-2 mx-1">All Notes</text>
 			</div>
-		{:else if props.curr_page == 'player_profile'}
+		{:else if props.curr_page == 'profile'}
 			<div in:fly={{ duration: 300, x: -20 }}>
 				<text class="py-2 mx-1">Player Profile</text>
 			</div>

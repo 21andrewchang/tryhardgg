@@ -19,7 +19,7 @@
 		{ displayName: 'Dashboard', pageName: 'dashboard' },
 		{ displayName: 'Library', pageName: 'library' },
 		{ displayName: 'All Notes', pageName: 'all_notes' },
-		{ displayName: 'Player Profile', pageName: 'player_profile' }
+		{ displayName: 'Player Profile', pageName: 'profile' }
 	];
 </script>
 

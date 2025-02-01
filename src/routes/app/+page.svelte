@@ -11,6 +11,7 @@
 	import Dashboard from './pages/Dashboard.svelte';
 	import Habit from './pages/Habit.svelte';
 	import AllNotes from './pages/AllNotes.svelte';
+	import Profile from './pages/Profile.svelte';
 
 	type Note = {
 		user_id: string | undefined;
@@ -38,6 +39,7 @@
 	const { data } = $props();
 	const user_id = data?.user?.id;
 
+	let user_lvl = $state(data.user_lvl);
 	let editorVisable = $state(false);
 	let games: Games = $state(data.games);
 	let mastery = $state(data.mastery);
@@ -160,35 +162,41 @@
 	}
 
 	let summaryVisable = $state(false);
-	function finishSession() {
-		summaryVisable = true;
-	}
-	async function nextSession() {
-		// 	if (games[1] && games[2] && games[3]) {
-		// 		session += 1;
-		// 		const body = {
-		// 			user_id: user_id,
-		// 			session: session
-		// 		};
-		// 		const res = await fetch(`/app/session`, {
-		// 			method: 'POST',
-		// 			headers: {
-		// 				'Content-Type': 'application/json'
-		// 			},
-		// 			body: JSON.stringify(body)
-		// 		});
-		// 		console.log(res);
-		// 		games = { '1': [] };
-		// 		curr_game = 1;
-		// 		summaryVisable = false;
-		// 		Object.values(habits).forEach((habit) => {
-		// 			habit.goodCount = 0;
-		// 			habit.badCount = 0;
-		// 		});
-		// 	}
-		// 	return;
-		// }
+
+	function nextSession() {
 		summaryVisable = false;
+		games = { '1': [] };
+		curr_game = 1;
+		Object.values(habits).forEach((habit) => {
+			habit.goodCount = 0;
+			habit.badCount = 0;
+		});
+	}
+
+	let leveledUpMastery = $state();
+
+	async function finishSession() {
+		if (games[1] && games[2] && games[3]) {
+			const body = {
+				user_id: user_id,
+				session: session,
+				block: block,
+				habit_ids: Object.keys(habits)
+			};
+			const res = await fetch(`/app/session`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(body)
+			});
+			const result = await res.json();
+			leveledUpMastery = { ...result.leveledUpMastery };
+			console.log('result', result);
+			summaryVisable = true;
+			session = result.updatedSession;
+			block = result.updatedBlock;
+		}
 	}
 
 	let curr_page = $state('session');
@@ -197,7 +205,6 @@
 	}
 	let selected_habit = $state();
 	onMount(() => {
-		console.log(window.innerWidth);
 		const checkWidth = () => {
 			if (window.innerWidth < 1200) {
 				sidebar = false;
@@ -207,7 +214,6 @@
 		};
 		checkWidth();
 		window.addEventListener('resize', checkWidth);
-		return () => window.removeEventListener('resize', checkWidth);
 	});
 </script>
 
@@ -218,7 +224,7 @@
 	<div class="flex flex-col p-8 w-full h-screen transition-all duration-300 ease-in-out">
 		<TopBar {sidebarT} {session} {block} {curr_page} {selected_habit} />
 		{#if curr_page == 'session'}
-			<Widgets {habits} />
+			<Widgets {habits} {user_lvl} {total_notes} />
 			<GamesList {games} {habits} />
 			<BottomButtons {createNote} {nextGame} {curr_game} {finishSession} {summaryVisable} />
 		{:else if curr_page == 'all_notes'}
@@ -229,10 +235,12 @@
 			<Dashboard />
 		{:else if curr_page == 'habit'}
 			<Habit {categorized_notes} {selected_habit} {library} {habits} {mastery} />
+		{:else if curr_page == 'profile'}
+			<Profile {user_lvl} {all_notes} />
 		{/if}
 	</div>
 	{#if summaryVisable}
-		<SessionSummary {habits} {total_notes} {nextSession} {mastery} />
+		<SessionSummary {habits} {total_notes} {nextSession} {mastery} {leveledUpMastery} test={true} />
 	{/if}
 	{#if editorVisable}
 		<NoteEditor

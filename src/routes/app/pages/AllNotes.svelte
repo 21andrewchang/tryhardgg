@@ -19,7 +19,8 @@
 	const library: Library = props.library;
 </script>
 
-<div class="flex overflow-y-auto flex-col pr-4 space-y-4 w-full">
+<div class="overflow-y-auto flex-col flex-1 pr-4 space-y-4">
+	<text class="mb-2 text-xl font-medium text-[#D3D3D3]">{props.all_notes.length}</text>
 	{#each props.all_notes as note}
 		<NoteView {note} {habits} />
 	{/each}

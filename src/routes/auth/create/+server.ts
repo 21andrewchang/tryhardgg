@@ -1,7 +1,7 @@
 import { client } from '$lib/supabase';
 import type { RequestHandler } from './$types';
 
-async function publishNewUser(id: string, archetype: string) {
+async function publishNewUser(id: string, archetype) {
 	try {
 		// Fetch all habit IDs from the library table
 		const { data: habits, error: habitsError } = await client.from('library').select('id'); // Only get habit IDs
@@ -14,10 +14,26 @@ async function publishNewUser(id: string, archetype: string) {
 		// Extract habit IDs into an array
 		const habitIds = habits.map((habit) => habit.id);
 
+		// NEW USER SHOULD ONLY HAVE ONE HABIT BASED ON THEIR ARCHEYTPE CATEGORY
+		// i.e. red, green, blue, yellow
+		//
 		// Insert new user with all habits
+		let first_habit = [];
+		console.log('archetype: ', archetype);
+		console.log('color: ', archetype.color);
+		if (archetype.color == 'yellow') {
+			first_habit.push(1);
+		} else if (archetype.color == 'blue') {
+			first_habit.push(3);
+		} else if (archetype.color == 'red') {
+			first_habit.push(4);
+		} else if (archetype.color == 'green') {
+			first_habit.push(18);
+		}
+
 		const { error: insertError } = await client
 			.from('users')
-			.insert({ id: id, archetype: archetype, session: 1, block: 1, habits: habitIds });
+			.insert({ id: id, archetype: archetype, session: 1, block: 1, habits: first_habit });
 
 		if (insertError) {
 			console.log('User insert error:', insertError);
@@ -25,6 +41,8 @@ async function publishNewUser(id: string, archetype: string) {
 		}
 
 		// Initialize mastery table for each habit
+		// This could possibly be a rly rly bad idea if theres a lot of new users
+		// should probably only initialize mastery for a habit when you actually choose it
 		const masteryEntries = habitIds.map((habit_id) => ({
 			user_id: id, // Ensure correct user_id field
 			habit_id: habit_id,
@@ -46,7 +64,8 @@ async function publishNewUser(id: string, archetype: string) {
 }
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	const archetype = cookies.get('archetype');
+	const archetypeCookie = cookies.get('archetype');
+	const archetype = archetypeCookie ? JSON.parse(archetypeCookie) : null;
 	const { email, password } = await request.json();
 
 	if (!email || !password) {

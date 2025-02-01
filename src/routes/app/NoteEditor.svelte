@@ -24,7 +24,7 @@
 	let tagDropdown = $state(false);
 	let tags = [{ name: '' }, { name: 'Early Game' }, { name: 'Mid Game' }, { name: 'Late Game' }];
 	let habits: Habit[] = Object.values(props.habits);
-
+	$inspect(good);
 
 	function focus(element: HTMLElement) {
 		element.focus();

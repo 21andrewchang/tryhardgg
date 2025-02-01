@@ -13,6 +13,7 @@
 	];
 
 	async function handleSubmit(event: any) {
+		event.preventDefault();
 		if (completed) {
 			const formData = new FormData(event.target);
 			formData.set('responses', JSON.stringify(responses));
@@ -42,8 +43,8 @@
 		<input type="hidden" name="responses" value={JSON.stringify(responses)} />
 
 		<button
+			class="py-2 px-20 text-lg font-medium rounded-lg duration-200 ease-in-out text-[#FAFAFA] hover:bg-white/10"
 			disabled={!completed}
-			class="py-3 px-6 m-4 text-white bg-blue-500 rounded hover:bg-blue-700 disabled:bg-neutral-800 disabled:text-neutral-700"
 			type="submit"
 		>
 			Submit

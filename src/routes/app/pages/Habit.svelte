@@ -13,9 +13,9 @@
 	let total_bads = $derived(all_notes[id]?.reduce((sum, note) => sum + (!note.good ? 1 : 0), 0));
 </script>
 
-<div class="flex overflow-hidden flex-col pr-4 space-y-6 w-full hover:overflow-y-auto">
+<div class="flex overflow-hidden flex-col pr-4 space-y-6 w-full">
 	<div class="flex flex-col space-y-6">
-		<text class="mb-2 text-lg text-[#6C6C6C]">{props.library[category][id].description}</text>
+		<text class="block mb-2 text-lg text-[#6C6C6C]">{props.library[category][id].description}</text>
 		<text class="mb-2 text-xl font-medium text-[#D3D3D3]">Mastery Level {lvl}</text>
 		<text class="mb-2 text-xl font-medium text-[#D3D3D3]">{points} Points</text>
 		<div class="flex flex-row space-x-6">
@@ -47,9 +47,13 @@
 			</button>
 		</div>
 	</div>
-	{#each all_notes[id] as note}
-		<NoteView {note} {habits} />
-	{/each}
+
+	<!-- Contain NoteView to avoid overflow -->
+	<div class="overflow-auto pr-4 space-y-4 max-w-full">
+		{#each all_notes[id] as note}
+			<NoteView {note} {habits} />
+		{/each}
+	</div>
 </div>
 
 <style>
@@ -59,7 +63,7 @@
 	}
 	::-webkit-scrollbar-track {
 		background: #202020;
-		margin: 40px 0; /* Add margin to shorten the scrollbar */
+		margin: 10px 0; /* Add margin to shorten the scrollbar */
 	}
 	::-webkit-scrollbar-thumb {
 		background: #606060;
