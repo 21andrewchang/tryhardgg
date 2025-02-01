@@ -28,12 +28,12 @@
 
 <div class="flex overflow-y-hidden flex-col w-screen h-screen">
 	<Nav />
-	<h1 class="mt-24 text-xl text-center text-[#D3D3D3]">Your player archetype is:</h1>
+	<h1 class="mt-28 text-xl text-center text-[#D3D3D3]">Your player archetype is:</h1>
 	<h1 class="m-4 text-5xl font-semibold text-center text-[#FAFAFA]">{data.archetype.name}</h1>
 	<div class="flex justify-center">
 		<div class="flex fixed left-0 bottom-12 justify-center w-full">
 			<button
-				class="flex flex-row items-center py-2 px-10 text-lg font-semibold rounded-lg duration-300 ease-in-out text-[#FAFAFA] hover:bg-white/10 hover:backdrop-blur"
+				class="flex flex-row items-center py-2 px-10 text-lg font-light rounded-lg duration-300 ease-in-out text-[#FAFAFA] hover:bg-white/10 hover:backdrop-blur"
 				onclick={() => goto('/login')}
 			>
 				Start Climbing

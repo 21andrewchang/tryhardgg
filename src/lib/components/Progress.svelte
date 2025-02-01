@@ -24,8 +24,8 @@
 
 <div
 	class="flex z-50 flex-col w-full"
-	style:position={scrollY >= 512 ? 'fixed' : 'relative'}
-	style:top={scrollY >= 512 ? '95px' : ''}
+	style:position={scrollY >= 530 ? 'fixed' : 'relative'}
+	style:top={scrollY >= 530 ? '75px' : ''}
 >
 	<!-- Progress bar container -->
 	<div class="top-0 z-50 mx-32 bg-[rgba(0,0,0,0.5)] backdrop-blur-md">
@@ -46,7 +46,7 @@
 	</div>
 	<p class="ml-32 text-xs text-white/80">{Math.round(progress.current)}%</p>
 </div>
-{#if scrollY >= 512}
+{#if scrollY >= 530}
 	<div class="h-[13px]"></div>
 {/if}
 

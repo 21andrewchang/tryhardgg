@@ -54,12 +54,12 @@
 <div class="flex overflow-hidden flex-col justify-center items-center w-screen h-screen">
 	<Nav />
 	<div
-		class="z-50 w-96 flex-col items-center rounded-lg border border-[#202020] px-8 backdrop-blur-md duration-300 ease-in-out {loading
+		class="z-50 flex-col items-center rounded-lg border border-[#202020] backdrop-blur-md duration-300 ease-in-out {loading
 			? 'pointer-events-none opacity-10 blur-sm'
 			: ''}"
 		in:scale={{ duration: 300, start: 0.9, opacity: 1 }}
 	>
-		<div class="my-8">
+		<div class="px-8 my-8">
 			<p class="text-xl font-light text-[#FAFAFA]">Email</p>
 			<input
 				class="w-full text-white bg-[#09090B]"
@@ -70,7 +70,7 @@
 				required
 			/>
 		</div>
-		<div class="my-8">
+		<div class="px-8 my-8">
 			<p class="text-xl font-light text-[#FAFAFA]">Password</p>
 			<input
 				class="w-full text-white bg-[#09090B]"
@@ -88,19 +88,19 @@
 			<p class="text-black/0">.</p>
 		{/if}
 
-		<div class="flex flex-col w-full border-t border-[#202020]">
-			<button
-				onclick={() => handleAuth(true)}
-				class="py-3 px-16 mt-8 font-semibold rounded-lg duration-300 ease-in-out bg-[#09090B]/0 text-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B]"
-			>
-				Create Account
-			</button>
+		<div class="flex flex-row justify-between items-center px-8 w-full border-t border-[#202020]">
 			<button
 				onclick={() => handleAuth(false)}
-				class="py-3 px-16 my-4 font-semibold rounded-lg duration-300 ease-in-out bg-[#09090B]/0 text-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B]"
+				class="py-3 px-4 my-4 mx-2 w-52 rounded-lg duration-300 ease-in-out bg-[#09090B]/0 text-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B]"
 				type="submit"
 			>
 				Sign In
+			</button>
+			<button
+				onclick={() => handleAuth(true)}
+				class="py-3 px-4 my-4 mx-2 w-52 rounded-lg duration-300 ease-in-out bg-[#09090B]/0 text-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B]"
+			>
+				Create Account
 			</button>
 		</div>
 	</div>
