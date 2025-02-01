@@ -1,15 +1,24 @@
 <script lang="ts">
+	import arrow from '$lib/images/back.svg';
+	import ga from '$lib/images/GA.svg';
+	import warmogs from '$lib/images/warmogs.svg';
+	import zhonyas from '$lib/images/zhonyas.svg';
+	import steraks from '$lib/images/steraks.svg';
 	import Nav from '$lib/components/Nav.svelte';
 	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	let { data } = $props();
-	const categories = [
-		{ name: 'Decision Making', color: 'yellow' },
-		{ name: 'Fighting and Mechanics', color: 'red' },
-		{ name: 'Information Gathering', color: 'blue' },
-		{ name: 'Income and Strength', color: 'green' }
-	];
-	$inspect(data);
+
+	let image = $state('');
+	if (data.archetype.color == 'yellow') {
+		image = ga;
+	} else if (data.archetype.color == 'red') {
+		image = steraks;
+	} else if (data.archetype.color == 'blue') {
+		image = zhonyas;
+	} else if (data.archetype.color == 'green') {
+		image = warmogs;
+	}
 	// id: traits.map((trait) => trait[0]).join(''),
 	// name,
 	// group,
@@ -19,22 +28,42 @@
 
 <div class="flex overflow-y-hidden flex-col w-screen h-screen">
 	<Nav />
-	<h1 class="mt-36 text-2xl text-center text-[#D3D3D3]">Your player archetype is:</h1>
-	<h1 class="m-10 text-5xl font-semibold text-center text-[#FAFAFA]">{data.archetype.name}</h1>
+	<h1 class="mt-24 text-xl text-center text-[#D3D3D3]">Your player archetype is:</h1>
+	<h1 class="m-4 text-5xl font-semibold text-center text-[#FAFAFA]">{data.archetype.name}</h1>
 	<div class="flex justify-center">
 		<div class="flex fixed left-0 bottom-12 justify-center w-full">
 			<button
-				class="py-2 px-10 text-lg font-semibold rounded-lg duration-300 ease-in-out text-[#FAFAFA] hover:bg-white/10 hover:backdrop-blur"
+				class="flex flex-row items-center py-2 px-10 text-lg font-semibold rounded-lg duration-300 ease-in-out text-[#FAFAFA] hover:bg-white/10 hover:backdrop-blur"
 				onclick={() => goto('/login')}
 			>
-				View Complete Profile
+				Start Climbing
+				<img src={arrow} alt=">" class="ml-4 rotate-180" />
 			</button>
 		</div>
 	</div>
 	<div class={data.archetype.color} in:fade={{ duration: 1000 }}></div>
+	<img
+		src={image}
+		in:fade={{ duration: 1000 }}
+		alt="img"
+		class={data.archetype.color === 'blue' || data.archetype.color === 'yellow'
+			? 'right-img'
+			: 'left-img'}
+	/>
 </div>
 
 <style>
+	.right-img {
+		position: fixed;
+		right: 0%;
+		bottom: 0%;
+	}
+
+	.left-img {
+		position: fixed;
+		left: 0%;
+		bottom: 0%;
+	}
 	.red {
 		overflow: hidden;
 		content: '';

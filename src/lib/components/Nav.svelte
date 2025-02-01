@@ -7,7 +7,7 @@
 	}
 </script>
 
-<div class="fixed top-0 z-30 pt-10 w-full bg-black/0 backdrop-blur-md">
+<div class="fixed top-0 z-30 pt-5 w-full bg-black/0 backdrop-blur-md">
 	<div
 		class="flex flex-row justify-between items-center mx-8 h-14 rounded-2xl border border-[#202020] bg-[rgba(0,0,0,0.0)] backdrop-blur-md"
 	>

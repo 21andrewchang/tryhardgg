@@ -1,11 +1,28 @@
 <script lang="ts">
-	import { fly, scale } from 'svelte/transition';
+	import { fly, scale, slide } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	import logo from '$lib/images/logo.svg';
+	import Nav from '$lib/components/Nav.svelte';
+	import ga from '$lib/images/GA.svg';
+	import warmogs from '$lib/images/warmogs.svg';
+	import zhonyas from '$lib/images/zhonyas.svg';
+	import steraks from '$lib/images/steraks.svg';
+	let { data } = $props();
 	let email = $state('');
 	let password = $state('');
 	let error = $state('');
 	let loading = $state(false);
+
+	let image = $state('');
+	if (data.archetype.color == 'yellow') {
+		image = ga;
+	} else if (data.archetype.color == 'red') {
+		image = steraks;
+	} else if (data.archetype.color == 'blue') {
+		image = zhonyas;
+	} else if (data.archetype.color == 'green') {
+		image = warmogs;
+	}
 
 	async function handleAuth(newUser: boolean) {
 		loading = true;
@@ -34,17 +51,18 @@
 	}
 </script>
 
-<div class="flex justify-center items-center h-screen">
-	<!-- Add a binding on class based on the loading state -->
+<div class="flex overflow-hidden flex-col justify-center items-center w-screen h-screen">
+	<Nav />
 	<div
-		class="flex-col items-center rounded-lg border border-[#202020] px-8 backdrop-blur-md duration-300 ease-in-out {loading
+		class="z-50 w-96 flex-col items-center rounded-lg border border-[#202020] px-8 backdrop-blur-md duration-300 ease-in-out {loading
 			? 'pointer-events-none opacity-10 blur-sm'
 			: ''}"
+		in:scale={{ duration: 300, start: 0.9, opacity: 1 }}
 	>
 		<div class="my-8">
-			<p class="text-xs font-light text-[#FAFAFA]">Email</p>
+			<p class="text-xl font-light text-[#FAFAFA]">Email</p>
 			<input
-				class="w-full text-white bg-neutral-900"
+				class="w-full text-white bg-[#09090B]"
 				bind:value={email}
 				type="email"
 				id="email"
@@ -53,9 +71,9 @@
 			/>
 		</div>
 		<div class="my-8">
-			<p class="text-xs font-light text-[#FAFAFA]">Password</p>
+			<p class="text-xl font-light text-[#FAFAFA]">Password</p>
 			<input
-				class="w-full text-white bg-neutral-900"
+				class="w-full text-white bg-[#09090B]"
 				bind:value={password}
 				type="password"
 				id="password"
@@ -70,16 +88,16 @@
 			<p class="text-black/0">.</p>
 		{/if}
 
-		<div class="flex flex-col">
+		<div class="flex flex-col w-full border-t border-[#202020]">
 			<button
 				onclick={() => handleAuth(true)}
-				class="py-3 px-16 my-4 text-black rounded-lg duration-300 ease-in-out hover:text-white bg-[#FAFAFA] hover:border-[#202020] hover:bg-[#09090B]"
+				class="py-3 px-16 mt-8 font-semibold rounded-lg duration-300 ease-in-out bg-[#09090B]/0 text-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B]"
 			>
 				Create Account
 			</button>
 			<button
 				onclick={() => handleAuth(false)}
-				class="py-3 px-16 my-4 rounded-lg border duration-300 ease-in-out border-[#202020] bg-[#09090B] text-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B]"
+				class="py-3 px-16 my-4 font-semibold rounded-lg duration-300 ease-in-out bg-[#09090B]/0 text-[#FAFAFA] hover:bg-[#FAFAFA] hover:text-[#09090B]"
 				type="submit"
 			>
 				Sign In
@@ -94,6 +112,14 @@
 			in:scale={{ duration: 200, start: 0.5, opacity: 1 }}
 		/>
 	{/if}
+	<div class={data.archetype.color}></div>
+	<img
+		src={image}
+		alt="img"
+		class={data.archetype.color === 'blue' || data.archetype.color === 'yellow'
+			? 'right-img'
+			: 'left-img'}
+	/>
 </div>
 
 <style>
@@ -111,5 +137,108 @@
 
 	.breathing {
 		animation: breathing 2s ease-in-out infinite;
+	}
+	.right-img {
+		position: fixed;
+		right: 0%;
+		bottom: 0%;
+	}
+
+	.left-img {
+		position: fixed;
+		left: 0%;
+		bottom: 0%;
+	}
+	.red {
+		overflow: hidden;
+		content: '';
+		position: fixed;
+		bottom: -100%; /* Keep the center of the red glow at the bottom-right */
+		width: 200vw; /* Constrain the glow to the edge */
+		left: -75%;
+		height: 150%; /* Extend height for vertical coverage */
+		pointer-events: none;
+		background: radial-gradient(
+			circle,
+			rgba(255, 0, 0, 0.4) 10%,
+			rgba(255, 0, 0, 0.2) 50%,
+			transparent 100%
+		);
+		mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		-webkit-mask-image:
+			linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			/* Fade at the top */ linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		mask-composite: intersect;
+		-webkit-mask-composite: intersect;
+	}
+	.green {
+		overflow: hidden;
+		content: '';
+		position: fixed;
+		bottom: -100%; /* Keep the center of the red glow at the bottom-right */
+		width: 200vw; /* Constrain the glow to the edge */
+		left: -75%;
+		height: 150%; /* Extend height for vertical coverage */
+		pointer-events: none;
+		background: radial-gradient(
+			circle,
+			rgba(0, 255, 0, 0.4) 10%,
+			rgba(0, 255, 0, 0.2) 50%,
+			transparent 100%
+		);
+		mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		-webkit-mask-image:
+			linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			/* Fade at the top */ linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		mask-composite: intersect;
+		-webkit-mask-composite: intersect;
+	}
+	.blue {
+		overflow: hidden;
+		content: '';
+		position: fixed;
+		bottom: -100%; /* Keep the center of the red glow at the bottom-right */
+		width: 200vw; /* Constrain the glow to the edge */
+		left: -75%;
+		height: 150%; /* Extend height for vertical coverage */
+		pointer-events: none;
+		background: radial-gradient(
+			circle,
+			rgba(0, 0, 255, 0.4) 10%,
+			rgba(0, 0, 255, 0.2) 50%,
+			transparent 100%
+		);
+		mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		-webkit-mask-image:
+			linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			/* Fade at the top */ linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		mask-composite: intersect;
+		-webkit-mask-composite: intersect;
+	}
+	.yellow {
+		overflow: hidden;
+		content: '';
+		position: fixed;
+		bottom: -100%; /* Keep the center of the red glow at the bottom-right */
+		width: 200vw; /* Constrain the glow to the edge */
+		left: -75%;
+		height: 150%; /* Extend height for vertical coverage */
+		pointer-events: none;
+		background: radial-gradient(
+			circle,
+			rgba(255, 255, 0, 0.4) 10%,
+			rgba(255, 255, 0, 0.2) 50%,
+			transparent 100%
+		);
+		mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		-webkit-mask-image:
+			linear-gradient(to top, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%),
+			/* Fade at the top */ linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
+		mask-composite: intersect;
+		-webkit-mask-composite: intersect;
 	}
 </style>
