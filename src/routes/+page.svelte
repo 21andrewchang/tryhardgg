@@ -14,7 +14,7 @@
 	});
 
 	function handleQuiz() {
-		smoothScrollTo(512);
+		smoothScrollTo(530);
 	}
 
 	function smoothScrollTo(targetY, duration = 300) {
