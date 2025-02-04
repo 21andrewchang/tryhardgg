@@ -12,6 +12,8 @@
 	console.log('summary opened');
 	$inspect(props.mastery);
 	$inspect(leveledUpMastery);
+	// const thresholds = [100, 200, 300, 400, 500, 600, 700];
+	const thresholds = [50, 50, 50, 50, 50, 50, 50]; //test thresholds
 </script>
 
 <!-- Background Container -->
@@ -94,10 +96,18 @@
 								<div class="relative self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
 									{leveledUpMastery[habit.id].points}
 								</div>
+								<div class="relative self-start my-2 text-2xl font-medium text-[#6C6C6C]">
+									/{thresholds[leveledUpMastery[habit.id].lvl]}
+								</div>
 							</div>
 						{:else}
-							<div class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
-								{props.mastery[habit.id].points}
+							<div class="flex flex-row items-center self-start space-x-2">
+								<div class="self-start my-2 text-2xl font-semibold text-[#FAFAFA]">
+									{props.mastery[habit.id].points}
+								</div>
+								<div class="relative self-start my-2 text-2xl font-light text-[#6C6C6C]">
+									/ {thresholds[props.mastery[habit.id].lvl - 1]}
+								</div>
 							</div>
 						{/if}
 					</div>
@@ -119,7 +129,13 @@
 	<div class="flex fixed left-0 bottom-8 justify-center w-full">
 		<button
 			class="py-2 px-10 text-sm font-semibold rounded-lg duration-200 ease-in-out text-[#FAFAFA] hover:bg-white/10"
-			onclick={() => props.nextSession()}
+			onclick={() => {
+				if (props.user_lvlUp) {
+					props.showLevelUp();
+				} else {
+				}
+				props.nextSession();
+			}}
 		>
 			Continue
 		</button>

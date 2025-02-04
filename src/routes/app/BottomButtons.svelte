@@ -1,5 +1,6 @@
 <script lang="ts">
 	let props = $props();
+	let dark = $state(false);
 
 	let remainder = $derived(3 - props.curr_game);
 </script>
@@ -28,9 +29,9 @@
 				g
 			</div>
 		</button>
-	{:else if props.summaryVisable}
+	{:else if props.summaryVisible || props.lvlUpVisible}
 		<button
-			class="flex flex-grow justify-center items-center py-1 px-4 text-xs font-semibold rounded-lg border duration-200 ease-in-out border-[#202020] bg-[#09090B] text-[#09090B]"
+			class="flex flex-grow justify-center items-center py-1 px-4 text-xs font-semibold rounded-lg duration-200 ease-in-out bg-[#09090B] text-[#09090B]"
 			onclick={() => {
 				console.log('finish session');
 				props.finishSession();

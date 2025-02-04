@@ -179,7 +179,7 @@
 					<button
 						class="flex relative flex-row items-center py-2 px-4 m-0 mr-2 text-xs font-medium rounded-lg border duration-200 ease-in border-[#202022] bg-[#202022] text-neutral-200 hover:text-[#D3D3D3]"
 						onclick={() => {
-							habit_id = item.id;
+							habit_id = 0;
 						}}
 					>
 						<Indicator category={item.category} />

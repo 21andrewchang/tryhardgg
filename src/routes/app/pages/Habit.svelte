@@ -11,13 +11,19 @@
 	$inspect(points);
 	let total_goods = $derived(all_notes[id]?.reduce((sum, note) => sum + (note.good ? 1 : 0), 0));
 	let total_bads = $derived(all_notes[id]?.reduce((sum, note) => sum + (!note.good ? 1 : 0), 0));
+	const thresholds = [100, 200, 300, 400, 500, 600, 700];
+	// const thresholds = [50, 50, 50, 50, 50, 50, 50]; //test thresholds
+	$inspect(props.mastery);
+	$inspect(id);
 </script>
 
 <div class="flex overflow-hidden flex-col pr-4 space-y-6 w-full">
 	<div class="flex flex-col space-y-6">
 		<text class="block mb-2 text-lg text-[#6C6C6C]">{props.library[category][id].description}</text>
 		<text class="mb-2 text-xl font-medium text-[#D3D3D3]">Mastery Level {lvl}</text>
-		<text class="mb-2 text-xl font-medium text-[#D3D3D3]">{points} Points</text>
+		<text class="mb-2 text-xl font-medium text-[#D3D3D3]"
+			>{points} / {thresholds[lvl - 1]} Points</text
+		>
 		<div class="flex flex-row space-x-6">
 			<button class="p-4 py-2 w-1/2 rounded-lg border border-[#202020] bg-[#09090B]">
 				<div class="flex items-center w-full">

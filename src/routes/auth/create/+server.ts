@@ -43,15 +43,17 @@ async function publishNewUser(id: string, archetype) {
 		// Initialize mastery table for each habit
 		// This could possibly be a rly rly bad idea if theres a lot of new users
 		// should probably only initialize mastery for a habit when you actually choose it
-		const masteryEntries = habitIds.map((habit_id) => ({
+		const new_mastery = {
 			user_id: id, // Ensure correct user_id field
-			habit_id: habit_id,
+			habit_id: first_habit[0],
 			lvl: 1,
-			points: 0
-		}));
+			points: 0,
+			session: 1,
+			block: 1
+		};
 
 		// Insert all mastery entries
-		const { error: masteryError } = await client.from('mastery').insert(masteryEntries);
+		const { error: masteryError } = await client.from('mastery').insert(new_mastery);
 
 		if (masteryError) {
 			console.log('Mastery insert error:', masteryError);

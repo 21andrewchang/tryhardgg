@@ -1,5 +1,9 @@
 <script lang="ts">
 	import Indicator from '../Indicator.svelte';
+	import red from '$lib/images/fighting.svg';
+	import yellow from '$lib/images/strategy.svg';
+	import blue from '$lib/images/information.svg';
+	import green from '$lib/images/income.svg';
 	let props = $props();
 	type Habit = {
 		id: number;
@@ -11,10 +15,10 @@
 	type Library = Record<string, Habit[]>;
 
 	const categories = [
-		{ name: 'Decision Making', color: 'yellow' },
-		{ name: 'Fighting and Mechanics', color: 'red' },
-		{ name: 'Information Gathering', color: 'blue' },
-		{ name: 'Income and Strength', color: 'green' }
+		{ name: 'Decision Making', color: 'yellow', path: yellow },
+		{ name: 'Fighting and Mechanics', color: 'red', path: red },
+		{ name: 'Information Gathering', color: 'blue', path: blue },
+		{ name: 'Income and Strength', color: 'green', path: green }
 	];
 	const library: Library = props.library;
 </script>
@@ -22,7 +26,10 @@
 <div class="flex overflow-hidden flex-col pr-4 space-y-4 w-full hover:overflow-y-auto">
 	{#each categories as category}
 		<div class="flex flex-col items-start">
-			<text class="mb-2 text-md text-[#D3D3D3]">{category.name}</text>
+			<div class="flex flex-row items-center mb-2 space-x-2">
+				<img src={category.path} alt={category.name} class="w-4 h-4" />
+				<text class="text-md text-[#D3D3D3]">{category.name}</text>
+			</div>
 			<!-- Grid Container -->
 			<div class="grid grid-cols-2 gap-4 w-full">
 				{#each Object.values(library[category.color]) as habit}

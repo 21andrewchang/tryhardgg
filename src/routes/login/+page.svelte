@@ -25,28 +25,30 @@
 	}
 
 	async function handleAuth(newUser: boolean) {
-		loading = true;
-		const route = newUser ? 'create' : 'login';
-		const body = JSON.stringify({
-			email: email,
-			password: password
-		});
+		if (email && password) {
+			loading = true;
+			const route = newUser ? 'create' : 'login';
+			const body = JSON.stringify({
+				email: email,
+				password: password
+			});
 
-		const res = await fetch(`/auth/${route}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: body
-		});
-		if (res.ok) {
-			goto('/app');
-		} else {
-			loading = false;
-			const errorData = await res.json(); // Parse the JSON response for error details
-			const errorMessage = errorData.error || 'Something went wrong'; // Fallback if no error message is provided
-			console.error('Error:', errorMessage);
-			error = errorMessage; // Set the error message to display it in the UI
+			const res = await fetch(`/auth/${route}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: body
+			});
+			if (res.ok) {
+				goto('/app');
+			} else {
+				loading = false;
+				const errorData = await res.json(); // Parse the JSON response for error details
+				const errorMessage = errorData.error || 'Something went wrong'; // Fallback if no error message is provided
+				console.error('Error:', errorMessage);
+				error = errorMessage; // Set the error message to display it in the UI
+			}
 		}
 	}
 </script>
@@ -60,9 +62,9 @@
 		in:scale={{ duration: 300, start: 0.9, opacity: 1 }}
 	>
 		<div class="px-8 my-8">
-			<p class="text-xl font-light text-[#FAFAFA]">Email</p>
+			<p class="mb-2 text-xl font-light text-[#FAFAFA]">Email</p>
 			<input
-				class="w-full text-white bg-[#09090B]"
+				class="p-2 w-full text-xl rounded-md bg-[#202020]/50 text-[#FAFAFA]"
 				bind:value={email}
 				type="email"
 				id="email"
@@ -71,9 +73,9 @@
 			/>
 		</div>
 		<div class="px-8 my-8">
-			<p class="text-xl font-light text-[#FAFAFA]">Password</p>
+			<p class="mb-2 text-xl font-light text-[#FAFAFA]">Password</p>
 			<input
-				class="w-full text-white bg-[#09090B]"
+				class="p-2 w-full text-xl rounded-md bg-[#202020]/50 text-[#FAFAFA]"
 				bind:value={password}
 				type="password"
 				id="password"
@@ -240,5 +242,10 @@
 			/* Fade at the top */ linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%); /* Fade towards the center */
 		mask-composite: intersect;
 		-webkit-mask-composite: intersect;
+	}
+	input:focus {
+		outline: none; /* Removes the default blue outline */
+		box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.15);
+		transition: box-shadow 0.2s ease-in-out;
 	}
 </style>

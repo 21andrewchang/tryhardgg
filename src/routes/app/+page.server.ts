@@ -105,7 +105,7 @@ async function getHabitMasteries(userId: string | undefined, habit_ids: string[]
 
 	const { data: mastery, error: masteryError } = await client
 		.from('mastery')
-		.select('habit_id, lvl, points')
+		.select('habit_id, lvl, points, session, block')
 		.eq('user_id', userId) // Ensure we fetch only this user's mastery data
 		.in('habit_id', habit_ids); // Filter for specific habit IDs
 
@@ -116,12 +116,16 @@ async function getHabitMasteries(userId: string | undefined, habit_ids: string[]
 
 	// Convert array to object with habit_id as key
 	const masteryMap = mastery.reduce(
-		(acc, { habit_id, lvl, points }) => {
-			acc[habit_id] = { lvl, points };
+		(acc, { habit_id, lvl, points, session, block }) => {
+			acc[habit_id] = { habit_id, lvl, points, session, block };
 			return acc;
 		},
-		{} as Record<number, { lvl: number; points: number }>
+		{} as Record<
+			number,
+			{ habit_id: number; lvl: number; points: number; session: number; block: number }
+		>
 	);
+	console.log('getHabitMasteries: ', masteryMap);
 
 	return masteryMap;
 }
