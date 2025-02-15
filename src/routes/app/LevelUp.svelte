@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fade, fly } from 'svelte/transition';
+	import { fade, fly, scale } from 'svelte/transition';
 	import Indicator from './Indicator.svelte';
 	import { cubicOut } from 'svelte/easing';
 
@@ -14,10 +14,22 @@
 
 	// Define all concepts
 	let allConcepts = [
-		{ name: 'Decision Making', category: 'yellow' },
-		{ name: 'Fighting and Mechanics', category: 'red' },
-		{ name: 'Information Gathering', category: 'blue' },
-		{ name: 'Income and Strength', category: 'green' }
+		{
+			name: 'Decision Making',
+			category: 'yellow'
+		},
+		{
+			name: 'Fighting and Mechanics',
+			category: 'red'
+		},
+		{
+			name: 'Information Gathering',
+			category: 'blue'
+		},
+		{
+			name: 'Income and Strength',
+			category: 'green'
+		}
 	];
 	const level = ['Beginner', 'Novice', 'Intermediate', 'Advanced', 'Expert'];
 	let habitColors = new Set(habits.map((habit) => habit.category));
@@ -47,24 +59,24 @@
 			</button>
 		</div>
 	{:else}
-		<div class="flex flex-row justify-center items-center space-x-10">
-			{#each concepts as concept, index}
-				<button
-					in:fly|global={{ y: 50, duration: 300, delay: 700 + index * 100, easing: cubicOut }}
-					class="flex flex-col justify-between py-3 px-4 mb-2 rounded-xl duration-300 ease-in-out hover:scale-110"
-					onclick={() => {
-						console.log(concept);
-						selected = concept;
-					}}
-				>
-					<div class="flex flex-row justify-between items-center">
-						<div class="flex flex-row items-center">
+		<div class="flex flex-col justify-center items-center h-full">
+			<!-- Button Group Fixed in Center -->
+			<div
+				class="flex absolute top-1/2 left-1/2 flex-wrap gap-4 justify-center transform -translate-x-1/2 -translate-y-1/2"
+			>
+				{#each concepts as concept, index}
+					<button
+						in:fly|global={{ y: 50, duration: 300, delay: 700 + index * 100, easing: cubicOut }}
+						class="flex flex-col justify-between py-3 px-6 rounded-xl duration-300 ease-in-out hover:scale-110 text-[#E2E2E2]"
+						onclick={() => (selected = concept)}
+					>
+						<div class="flex items-center">
 							<Indicator category={concept.category} size={'xl'} />
-							<span class="mx-2 font-semibold text-[#E2E2E2]">{concept.name}</span>
+							<span class="mx-2 font-semibold">{concept.name}</span>
 						</div>
-					</div>
-				</button>
-			{/each}
+					</button>
+				{/each}
+			</div>
 		</div>
 
 		<!-- Keep Button Fixed at Bottom -->

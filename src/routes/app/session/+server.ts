@@ -73,10 +73,6 @@ async function handleBlockEnd(total_notes: number, user_lvl: number) {
 	const level = ['Beginner', 'Novice', 'Intermediate', 'Advanced', 'Expert'];
 	let levelUp = false;
 	const thresholds = [100, 300, 500, 750, 1000];
-	// Beginner (0) - One habit given to you at start
-	// Novice (0) - Pick a new category
-	// Intermediate (0) - Pick a new category
-	// Advanced (0) - Pick a habit out of final category
 	// const thresholds = [10, 20, 30, 40, 50]; //test thresholds
 	if (total_notes >= thresholds[user_lvl]) {
 		user_lvl += 1;

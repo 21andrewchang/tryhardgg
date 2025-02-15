@@ -24,6 +24,7 @@ async function handleNewNote(user_id: string, habit_id: number, good: boolean) {
 
 	points += pointsEarned;
 
+	//need to update for current session and block
 	const { error: updateError } = await client
 		.from('mastery')
 		.update({ points: points })
@@ -41,14 +42,7 @@ async function handleNewNote(user_id: string, habit_id: number, good: boolean) {
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { user_id, habit_id, good, endSession } = await request.json();
-	// if (endSession) {
-	//       const result = "hello"
-	//         return new Response(JSON.stringify(result), {
-	//          headers: { 'Content-Type': 'application/json' }
-	//         });
-	//      console.log('end session isnt used');
-	// } else {
+	const { user_id, habit_id, good, session, block } = await request.json();
 	const result = await handleNewNote(user_id, habit_id, good);
 	return new Response(JSON.stringify(result), {
 		headers: { 'Content-Type': 'application/json' }

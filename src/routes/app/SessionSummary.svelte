@@ -12,8 +12,8 @@
 	console.log('summary opened');
 	$inspect(props.mastery);
 	$inspect(leveledUpMastery);
-	// const thresholds = [100, 200, 300, 400, 500, 600, 700];
-	const thresholds = [50, 50, 50, 50, 50, 50, 50]; //test thresholds
+	const thresholds = [100, 200, 300, 400, 500, 600, 700];
+	// const thresholds = [50, 50, 50, 50, 50, 50, 50]; //test thresholds
 </script>
 
 <!-- Background Container -->
